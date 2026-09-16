@@ -99,79 +99,104 @@
 
           @php
 
-            $attachment = $product->file_attachments->first();
+            $attachments = $product->file_attachments;
+            $attachment  = $attachments->first();
 
             $productImage = $attachment
                 ? asset('storage/' . ltrim($attachment->file_path, '/'))
-                : asset('images/default-product.jpg');
+                : null;
 
+            $imageCount = $attachments->count();
+            $hasPrice   = !empty($product->price);
           @endphp
 
 
-          <div
+          <a
+            href="{{ route('frontend.product', $product->id) }}"
             class="product-card"
             data-name="{{ strtolower($product->product_name) }}"
-            data-description="{{ strtolower($product->short_description ?? '') }}"
+            data-description="{{ strtolower(($product->short_description ?? '') . ' ' . ($product->description ?? '')) }}"
             data-category="{{ strtolower($product->category->category_name ?? '') }}">
 
 
-            <a
-              href="{{ route('frontend.product', $product->id) }}"
-              class="product-card-link">
+            <!-- PRODUCT IMAGE -->
+            <div class="product-card-img">
 
-
-              <!-- PRODUCT IMAGE -->
-              <div class="product-image">
+              @if($productImage)
 
                 <img
                   src="{{ $productImage }}"
                   alt="{{ $product->product_name }}"
+                  class="product-card-photo"
+                  loading="lazy"
                 />
 
+                @if($imageCount > 1)
 
-                @if($product->tag)
-
-                  <span class="product-badge">
-                    {{ $product->tag }}
+                  <span class="product-img-count">
+                    <i class="bi bi-images"></i>
+                    {{ $imageCount }}
                   </span>
 
                 @endif
 
-              </div>
+              @else
+
+                <span class="product-emoji">
+                  🛍️
+                </span>
+
+              @endif
 
 
-              <!-- PRODUCT INFO -->
-              <div class="product-info">
+              @if($product->tag)
+
+                <span class="product-badge">
+                  {{ $product->tag }}
+                </span>
+
+              @endif
+
+            </div>
 
 
-                @if($product->category)
+            <!-- PRODUCT BODY -->
+            <div class="product-card-body">
 
-                  <span class="product-category">
-                    {{ $product->category->category_name }}
+              <h5>
+                {{ $product->product_name }}
+              </h5>
+
+
+              @if($product->short_description)
+
+                <p>
+                  {{ $product->short_description }}
+                </p>
+
+              @endif
+
+
+              <div class="product-card-footer">
+
+                @if($hasPrice)
+
+                  <span class="product-price">
+                    {{ $product->price }}
                   </span>
 
                 @endif
 
-
-                <h3>
-                  {{ $product->product_name }}
-                </h3>
-
-
-                @if($product->short_description)
-
-                  <p>
-                    {{ $product->short_description }}
-                  </p>
-
-                @endif
-
+                <span class="product-view-btn">
+                  View
+                  <i class="bi bi-arrow-right"></i>
+                </span>
 
               </div>
 
-            </a>
+            </div>
 
-          </div>
+          </a>
 
 
         @empty
@@ -214,4 +239,90 @@
     </div>
 
   </section>
-  @endsection
+
+@endsection
+
+@push('scripts')
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    var input     = document.getElementById('searchInput');
+    var clearBtn  = document.getElementById('searchClear');
+    var meta      = document.getElementById('searchMeta');
+    var grid      = document.getElementById('highlightGrid');
+    var empty     = document.getElementById('searchEmpty');
+    var emptyTerm = document.getElementById('searchEmptyTerm');
+
+    if (!input || !grid) return;
+
+    // These are server-rendered, so we filter the DOM directly
+    // using the data-* attributes already on each card, rather
+    // than re-rendering from a client-side product array.
+    var cards = Array.prototype.slice.call(grid.querySelectorAll('.product-card'));
+    var debounceTimer;
+
+    function doSearch(rawValue) {
+        var term = rawValue.trim();
+        var q    = term.toLowerCase();
+
+        if (clearBtn) {
+            clearBtn.classList.toggle('visible', term.length > 0);
+        }
+
+        if (!q) {
+            cards.forEach(function (card) { card.style.display = ''; });
+            grid.style.display  = 'grid';
+            empty.style.display = 'none';
+            if (meta) meta.textContent = '';
+            return;
+        }
+
+        var matchCount = 0;
+
+        cards.forEach(function (card) {
+            var haystack =
+                (card.dataset.name || '') + ' ' +
+                (card.dataset.description || '') + ' ' +
+                (card.dataset.category || '');
+
+            var isMatch = haystack.indexOf(q) !== -1;
+            card.style.display = isMatch ? '' : 'none';
+            if (isMatch) matchCount++;
+        });
+
+        if (matchCount === 0) {
+            grid.style.display  = 'none';
+            empty.style.display = 'flex';
+            if (emptyTerm) emptyTerm.textContent = '"' + term + '"';
+            if (meta) meta.textContent = '';
+        } else {
+            grid.style.display  = 'grid';
+            empty.style.display = 'none';
+            if (meta) {
+                meta.textContent = matchCount + ' result' + (matchCount !== 1 ? 's' : '') + ' for "' + term + '"';
+            }
+        }
+    }
+
+    input.addEventListener('input', function () {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(function () {
+            doSearch(input.value);
+        }, 180);
+    });
+
+    if (clearBtn) {
+        clearBtn.addEventListener('click', function () {
+            input.value = '';
+            input.focus();
+            doSearch('');
+        });
+    }
+
+});
+
+</script>
+
+@endpush

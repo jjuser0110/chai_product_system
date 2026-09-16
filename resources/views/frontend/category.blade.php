@@ -107,6 +107,8 @@
                 <a
                     href="{{ route('frontend.product', $product->id) }}"
                     class="product-card"
+                    data-name="{{ strtolower($product->product_name) }}"
+                    data-description="{{ strtolower(($product->short_description ?? '') . ' ' . ($product->description ?? '')) }}"
                 >
 
                     <!-- PRODUCT IMAGE -->
@@ -221,6 +223,8 @@
                 <a
                     href="{{ route('frontend.categories', ['category' => $category->id]) }}"
                     class="category-card"
+                    data-name="{{ strtolower($category->category_name) }}"
+                    data-description="{{ strtolower($category->description ?? '') }}"
                 >
 
                     <!-- CATEGORY ICON -->
@@ -283,14 +287,6 @@
     @endif
 
 
-    <!-- SEARCH RESULTS -->
-    <div
-        id="searchResults"
-        class="product-grid"
-        style="display:none;"
-    ></div>
-
-
     <!-- SEARCH EMPTY -->
     <div
         id="searchEmpty"
@@ -313,3 +309,105 @@
 </section>
 
 @endsection
+
+@push('scripts')
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    var input     = document.getElementById('searchInput');
+    var clearBtn  = document.getElementById('searchClear');
+    var meta      = document.getElementById('searchMeta');
+    var empty     = document.getElementById('searchEmpty');
+    var emptyTerm = document.getElementById('searchEmptyTerm');
+
+    var productGrid  = document.getElementById('productGrid');
+    var categoryGrid = document.getElementById('categoryGrid');
+
+    if (!input) return;
+
+    // Only one of these exists per page load, depending on whether
+    // a category is selected — filter whichever is present.
+    // NOTE: on the "all categories" view this only matches category
+    // name/description, since products from every category aren't
+    // rendered into the DOM here (no cross-category search endpoint).
+    var activeGrid   = productGrid || categoryGrid;
+    var cardSelector = productGrid ? '.product-card' : '.category-card';
+    var isProductView = !!productGrid;
+
+    var cards = activeGrid
+        ? Array.prototype.slice.call(activeGrid.querySelectorAll(cardSelector))
+        : [];
+
+    var debounceTimer;
+
+    function resultLabel(count) {
+        if (isProductView) {
+            return count === 1 ? 'product' : 'products';
+        }
+        return count === 1 ? 'category' : 'categories';
+    }
+
+    function doSearch(rawValue) {
+        var term = rawValue.trim();
+        var q    = term.toLowerCase();
+
+        if (clearBtn) {
+            clearBtn.classList.toggle('visible', term.length > 0);
+        }
+
+        if (!q) {
+            cards.forEach(function (card) { card.style.display = ''; });
+            if (activeGrid) activeGrid.style.display = 'grid';
+            if (empty) empty.style.display = 'none';
+            if (meta) meta.textContent = '';
+            return;
+        }
+
+        var matchCount = 0;
+
+        cards.forEach(function (card) {
+            var haystack =
+                (card.dataset.name || '') + ' ' +
+                (card.dataset.description || '');
+
+            var isMatch = haystack.indexOf(q) !== -1;
+            card.style.display = isMatch ? '' : 'none';
+            if (isMatch) matchCount++;
+        });
+
+        if (matchCount === 0) {
+            if (activeGrid) activeGrid.style.display = 'none';
+            if (empty) empty.style.display = 'flex';
+            if (emptyTerm) emptyTerm.textContent = '"' + term + '"';
+            if (meta) meta.textContent = '';
+        } else {
+            if (activeGrid) activeGrid.style.display = 'grid';
+            if (empty) empty.style.display = 'none';
+            if (meta) {
+                meta.textContent = matchCount + ' ' + resultLabel(matchCount) + ' for "' + term + '"';
+            }
+        }
+    }
+
+    input.addEventListener('input', function () {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(function () {
+            doSearch(input.value);
+        }, 180);
+    });
+
+    if (clearBtn) {
+        clearBtn.addEventListener('click', function () {
+            input.value = '';
+            input.focus();
+            doSearch('');
+        });
+    }
+
+});
+
+</script>
+
+@endpush
