@@ -35,9 +35,10 @@
                     <tbody>
                         @foreach($category as $row)
                         <tr>
-                            <td>{{$row->arrangement??""}}</td>
+                            
                             <td>{{$row->category_name??""}}</td>
                             <td>{{$row->description??""}}</td>
+                            <td>{{$row->arrangement??""}}</td>
                             <td>
                                 @if($row->is_active == 1)
                                     <span class="badge bg-label-success me-1">Active</span>
