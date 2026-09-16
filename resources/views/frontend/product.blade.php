@@ -4,95 +4,170 @@
 
 @section('content')
 
-<section class="page-hero page-hero--product">
-    <div class="container">
+<!-- PRODUCT PAGE HERO -->
 
-        <div class="page-hero-breadcrumb">
-            <a href="{{ route('frontend.home') }}">Home</a>
-            <span>/</span>
-            <a href="{{ route('frontend.categories') }}">Categories</a>
+<div class="page-hero">
+
+<div class="container">
+
+    <nav aria-label="breadcrumb">
+
+        <ol class="breadcrumb-custom" id="detailBreadcrumb">
+
+            <li>
+                <a href="{{ route('frontend.home') }}">
+                    Home
+                </a>
+            </li>
 
             @if($product->category)
-                <span>/</span>
-                <span>{{ $product->category->category_name }}</span>
+
+                <li>
+                    <a href="{{ route('frontend.categories', ['category' => $product->category_id]) }}">
+                        {{ $product->category->category_name }}
+                    </a>
+                </li>
+
             @endif
-        </div>
 
-        <h1 class="page-hero-title">
-            {{ $product->product_name }}
-        </h1>
+            <li>
+                {{ $product->product_name }}
+            </li>
 
-        @if($product->short_description)
-            <p class="page-hero-sub">
-                {{ $product->short_description }}
-            </p>
-        @endif
+        </ol>
 
-    </div>
-</section>
+    </nav>
 
+</div>
 
-<section class="product-detail-section">
+</div>
 
-    <div class="container">
+<!-- PRODUCT DETAIL -->
 
-        <div class="row g-5">
+<section class="section-pad">
 
-            {{-- PRODUCT IMAGE --}}
-            <div class="col-12 col-md-6">
+<div class="container">
 
-                @php
-                    $attachments = $product->file_attachments;
-                    $mainAttachment = $attachments->first();
+    <div
+        id="productDetail"
+        class="product-detail-wrap"
+    >
 
-                    $mainImage = $mainAttachment
-                        ? asset('storage/' . ltrim($mainAttachment->file_path, '/'))
-                        : asset('images/default-product.jpg');
-                @endphp
+        @php
+            $attachments = $product->file_attachments;
 
-                <div class="product-detail-image-wrap">
+            $images = $attachments->map(function ($attachment) {
+                return asset('storage/' . ltrim($attachment->file_path, '/'));
+            })->values();
 
-                    <img
-                        id="mainProductImage"
-                        src="{{ $mainImage }}"
-                        alt="{{ $product->product_name }}"
-                        class="product-detail-image"
-                    >
+            $hasImages = $images->count() > 0;
+            $hasMultipleImages = $images->count() > 1;
 
-                    @if($product->tag)
-                        <span class="product-detail-badge">
-                            {{ $product->tag }}
-                        </span>
-                    @endif
+            // Optional fields — only render if they exist on the model.
+            $hasPrice = !empty($product->price);
+            $specs    = $product->specs ?? null; // expects an array/JSON column
+            $hasSpecs = !empty($specs);
 
-                </div>
+            $whatsappNumber  = config('shopnest.whatsapp_number', '60123456789');
+            $whatsappMessage = "Hi! I'm interested in " . $product->product_name;
+        @endphp
 
+        <div class="row g-4 align-items-start">
 
-                {{-- PRODUCT THUMBNAILS --}}
-                @if($attachments->count() > 1)
+            <!-- PRODUCT IMAGE / SLIDER -->
+            <div class="col-12 col-md-5">
 
-                    <div class="product-thumbnails">
+                <a href="{{ url()->previous() ?: route('frontend.home') }}" class="back-btn">
+                    <i class="bi bi-arrow-left"></i> Back
+                </a>
 
-                        @foreach($attachments as $attachment)
+                @if($hasImages)
 
-                            @php
-                                $image = asset(
-                                    'storage/' . ltrim($attachment->file_path, '/')
-                                );
-                            @endphp
+                    <div class="img-slider" id="imgSlider">
 
-                            <button
-                                type="button"
-                                class="product-thumbnail {{ $loop->first ? 'active' : '' }}"
-                                onclick="changeProductImage('{{ $image }}', this)"
-                            >
-                                <img
-                                    src="{{ $image }}"
-                                    alt="{{ $product->product_name }}"
-                                >
+                        <div class="img-slider-track" id="imgTrack">
+
+                            @foreach($images as $index => $image)
+
+                                <div class="img-slide">
+                                    <img
+                                        src="{{ $image }}"
+                                        alt="{{ $product->product_name }} photo {{ $index + 1 }}"
+                                        loading="{{ $index === 0 ? 'eager' : 'lazy' }}"
+                                    >
+                                </div>
+
+                            @endforeach
+
+                        </div>
+
+                        @if($hasMultipleImages)
+
+                            <button class="img-slider-btn img-slider-prev" id="sliderPrev" aria-label="Previous">
+                                <i class="bi bi-chevron-left"></i>
                             </button>
 
-                        @endforeach
+                            <button class="img-slider-btn img-slider-next" id="sliderNext" aria-label="Next">
+                                <i class="bi bi-chevron-right"></i>
+                            </button>
+
+                            <div class="img-slider-dots" id="sliderDots">
+
+                                @foreach($images as $index => $image)
+
+                                    <button
+                                        class="img-dot {{ $index === 0 ? 'active' : '' }}"
+                                        data-index="{{ $index }}"
+                                        aria-label="Photo {{ $index + 1 }}"
+                                    ></button>
+
+                                @endforeach
+
+                            </div>
+
+                            <div class="img-slider-counter" id="sliderCounter">
+                                1 / {{ $images->count() }}
+                            </div>
+
+                        @endif
+
+                    </div>
+
+                    @if($hasMultipleImages)
+
+                        <div class="img-thumbnails" id="imgThumbs">
+
+                            @foreach($images as $index => $image)
+
+                                <button
+                                    class="img-thumb {{ $index === 0 ? 'active' : '' }}"
+                                    data-index="{{ $index }}"
+                                    aria-label="Photo {{ $index + 1 }}"
+                                >
+                                    <img src="{{ $image }}" alt="Thumb {{ $index + 1 }}" loading="lazy">
+                                </button>
+
+                            @endforeach
+
+                        </div>
+
+                    @endif
+
+                @else
+
+                    <div class="product-detail-img">
+
+                        <span class="product-detail-emoji">
+                            <i class="bi bi-bag-heart"></i>
+                        </span>
+
+                        @if($product->tag)
+
+                            <span class="product-badge product-badge--lg">
+                                {{ $product->tag }}
+                            </span>
+
+                        @endif
 
                     </div>
 
@@ -100,79 +175,99 @@
 
             </div>
 
-
-            {{-- PRODUCT INFORMATION --}}
-            <div class="col-12 col-md-6">
+            <!-- PRODUCT INFORMATION -->
+            <div class="col-12 col-md-7">
 
                 <div class="product-detail-info">
 
                     @if($product->category)
 
-                        <span class="product-category">
+                        <span class="product-detail-cat">
+                            <i class="bi {{ $product->category->icon ?? 'bi-tag' }}"></i>
                             {{ $product->category->category_name }}
                         </span>
 
                     @endif
 
+                    @if($product->tag && $hasImages)
 
-                    <h1 class="product-detail-title">
+                        <span
+                            class="product-badge product-badge--lg"
+                            style="position:relative;top:auto;left:auto;display:inline-block;margin-bottom:10px;"
+                        >
+                            {{ $product->tag }}
+                        </span>
+
+                    @endif
+
+                    <h1 class="product-detail-name">
                         {{ $product->product_name }}
                     </h1>
 
-
                     @if($product->short_description)
 
-                        <p class="product-detail-short-description">
+                        <p class="product-detail-short">
                             {{ $product->short_description }}
                         </p>
 
                     @endif
 
+                    @if($hasPrice)
+
+                        <div class="product-detail-price">
+                            {{ $product->price }}
+                        </div>
+
+                    @endif
 
                     @if($product->description)
 
-                        <div class="product-detail-description">
+                        <div class="product-detail-desc">
+                            {!! nl2br(e($product->description)) !!}
+                        </div>
 
-                            <h3>
-                                Description
-                            </h3>
+                    @endif
 
-                            <div>
-                                {!! nl2br(e($product->description)) !!}
-                            </div>
+                    @if($hasSpecs)
+
+                        <div class="product-specs">
+
+                            <h6>Key Features</h6>
+
+                            <ul>
+
+                                @foreach($specs as $spec)
+
+                                    <li>
+                                        <i class="bi bi-check-circle-fill"></i>
+                                        {{ $spec }}
+                                    </li>
+
+                                @endforeach
+
+                            </ul>
 
                         </div>
 
                     @endif
 
-
-                    {{-- PRODUCT TAG --}}
-                    @if($product->tag)
-
-                        <div class="product-detail-meta">
-
-                            <span class="meta-label">
-                                Tag
-                            </span>
-
-                            <span class="product-badge">
-                                {{ $product->tag }}
-                            </span>
-
-                        </div>
-
-                    @endif
-
-
-                    {{-- CONTACT BUTTON --}}
                     <div class="product-detail-actions">
 
                         <a
-                            href="{{ route('frontend.contact') }}"
-                            class="btn-primary-custom"
+                            href="https://wa.me/{{ $whatsappNumber }}?text={{ urlencode($whatsappMessage) }}"
+                            target="_blank"
+                            class="btn-buy btn-whatsapp"
                         >
-                            Enquire About This Product
-                            <i class="bi bi-chat-fill"></i>
+                            <i class="bi bi-whatsapp"></i>
+                            Order via WhatsApp
+                        </a>
+
+                        <a
+                            href="{{ route('frontend.contact') }}"
+                            class="btn-buy btn-contact"
+                        >
+                            <i class="bi bi-chat-dots-fill"></i>
+                            Contact Us
                         </a>
 
                     </div>
@@ -185,144 +280,239 @@
 
     </div>
 
+</div>
+
 </section>
 
+<!-- RELATED PRODUCTS -->
 
-{{-- RELATED PRODUCTS --}}
 @if($product->category)
 
-    @php
-        $relatedProducts = \App\Models\Product::with([
-            'category',
-            'file_attachments'
-        ])
-        ->where('category_id', $product->category_id)
-        ->where('id', '!=', $product->id)
-        ->where('is_active', 1)
-        ->orderBy('arrangement')
-        ->limit(4)
-        ->get();
-    @endphp
+@php
+
+    $relatedProducts = \App\Models\Product::with([
+        'category',
+        'file_attachments'
+    ])
+    ->where('category_id', $product->category_id)
+    ->where('id', '!=', $product->id)
+    ->where('is_active', 1)
+    ->orderBy('arrangement')
+    ->limit(4)
+    ->get();
+
+@endphp
 
 
-    @if($relatedProducts->count())
+@if($relatedProducts->count())
 
-        <section class="related-products-section">
+    <section class="section-pad related-products-section">
 
-            <div class="container">
+        <div class="container">
 
-                <div class="section-header">
+            <div class="section-header">
 
-                    <div>
-                        <span class="section-tag">
-                            You May Also Like
+                <div>
+
+                    <span class="section-tag">
+                        You May Also Like
+                    </span>
+
+                    <h2 class="section-title">
+                        Related
+                        <span class="accent">
+                            Products
                         </span>
-
-                        <h2 class="section-title">
-                            Related <span class="accent">Products</span>
-                        </h2>
-                    </div>
-
-                </div>
-
-
-                <div class="product-grid">
-
-                    @foreach($relatedProducts as $related)
-
-                        @php
-                            $attachment = $related->file_attachments->first();
-
-                            $relatedImage = $attachment
-                                ? asset('storage/' . ltrim($attachment->file_path, '/'))
-                                : asset('images/default-product.jpg');
-                        @endphp
-
-
-                        <div class="product-card">
-
-                            <a
-                                href="{{ route('frontend.product', $related->id) }}"
-                                class="product-card-link"
-                            >
-
-                                <div class="product-image">
-
-                                    <img
-                                        src="{{ $relatedImage }}"
-                                        alt="{{ $related->product_name }}"
-                                    >
-
-                                    @if($related->tag)
-
-                                        <span class="product-badge">
-                                            {{ $related->tag }}
-                                        </span>
-
-                                    @endif
-
-                                </div>
-
-
-                                <div class="product-info">
-
-                                    @if($related->category)
-
-                                        <span class="product-category">
-                                            {{ $related->category->category_name }}
-                                        </span>
-
-                                    @endif
-
-                                    <h3>
-                                        {{ $related->product_name }}
-                                    </h3>
-
-                                    @if($related->short_description)
-
-                                        <p>
-                                            {{ $related->short_description }}
-                                        </p>
-
-                                    @endif
-
-                                </div>
-
-                            </a>
-
-                        </div>
-
-                    @endforeach
+                    </h2>
 
                 </div>
 
             </div>
 
-        </section>
 
-    @endif
+            <div class="product-grid">
+
+                @foreach($relatedProducts as $related)
+
+                    @php
+
+                        $attachment = $related->file_attachments->first();
+
+                        $relatedImage = $attachment
+                            ? asset(
+                                'storage/' .
+                                ltrim($attachment->file_path, '/')
+                            )
+                            : null;
+
+                    @endphp
+
+
+                    <a
+                        href="{{ route('frontend.product', $related->id) }}"
+                        class="product-card"
+                    >
+
+                        <!-- PRODUCT IMAGE -->
+                        <div class="product-card-img">
+
+                            @if($relatedImage)
+
+                                <img
+                                    src="{{ $relatedImage }}"
+                                    alt="{{ $related->product_name }}"
+                                    class="product-card-photo"
+                                    loading="lazy"
+                                >
+
+                            @else
+
+                                <span class="product-emoji">
+                                    🛍️
+                                </span>
+
+                            @endif
+
+
+                            @if($related->tag)
+
+                                <span class="product-badge">
+                                    {{ $related->tag }}
+                                </span>
+
+                            @endif
+
+                        </div>
+
+
+                        <!-- PRODUCT BODY -->
+                        <div class="product-card-body">
+
+                            @if($related->category)
+
+                                <span class="product-category">
+                                    {{ $related->category->category_name }}
+                                </span>
+
+                            @endif
+
+
+                            <h5>
+                                {{ $related->product_name }}
+                            </h5>
+
+
+                            @if($related->short_description)
+
+                                <p>
+                                    {{ $related->short_description }}
+                                </p>
+
+                            @elseif($related->description)
+
+                                <p>
+                                    {{ \Illuminate\Support\Str::limit($related->description, 100) }}
+                                </p>
+
+                            @endif
+
+
+                            <div class="product-card-footer">
+
+                                <span class="product-view-btn">
+                                    View
+                                    <i class="bi bi-arrow-right"></i>
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </a>
+
+                @endforeach
+
+            </div>
+
+        </div>
+
+    </section>
 
 @endif
 
+@endif
 
 @push('scripts')
 
 <script>
-function changeProductImage(image, button) {
 
-    const mainImage = document.getElementById('mainProductImage');
+document.addEventListener('DOMContentLoaded', function () {
 
-    if (mainImage) {
-        mainImage.src = image;
-    }
+    var slider = document.getElementById('imgSlider');
+    if (!slider) return;
 
-    document.querySelectorAll('.product-thumbnail')
-        .forEach(function(item) {
-            item.classList.remove('active');
+    var track   = document.getElementById('imgTrack');
+    var dots    = document.querySelectorAll('.img-dot');
+    var thumbs  = document.querySelectorAll('.img-thumb');
+    var counter = document.getElementById('sliderCounter');
+    var prevBtn = document.getElementById('sliderPrev');
+    var nextBtn = document.getElementById('sliderNext');
+
+    // If there's only one image, there are no nav controls to wire up.
+    if (!prevBtn || !nextBtn) return;
+
+    var total   = track.children.length;
+    var current = 0;
+
+    function goTo(index) {
+        current = (index + total) % total;
+        track.style.transform = 'translateX(-' + (current * 100) + '%)';
+
+        dots.forEach(function (d, i) {
+            d.classList.toggle('active', i === current);
         });
 
-    button.classList.add('active');
-}
+        thumbs.forEach(function (t, i) {
+            t.classList.toggle('active', i === current);
+        });
+
+        if (counter) {
+            counter.textContent = (current + 1) + ' / ' + total;
+        }
+    }
+
+    prevBtn.addEventListener('click', function () { goTo(current - 1); });
+    nextBtn.addEventListener('click', function () { goTo(current + 1); });
+
+    dots.forEach(function (d) {
+        d.addEventListener('click', function () { goTo(+d.dataset.index); });
+    });
+
+    thumbs.forEach(function (t) {
+        t.addEventListener('click', function () { goTo(+t.dataset.index); });
+    });
+
+    // Touch / swipe support
+    var touchStartX = 0;
+    slider.addEventListener('touchstart', function (e) {
+        touchStartX = e.touches[0].clientX;
+    }, { passive: true });
+
+    slider.addEventListener('touchend', function (e) {
+        var diff = touchStartX - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 40) {
+            goTo(diff > 0 ? current + 1 : current - 1);
+        }
+    });
+
+    // Keyboard arrow support
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowLeft')  goTo(current - 1);
+        if (e.key === 'ArrowRight') goTo(current + 1);
+    });
+
+});
+
 </script>
 
 @endpush

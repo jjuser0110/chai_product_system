@@ -5,290 +5,310 @@
 @section('content')
 
 <!-- PAGE HERO -->
+
 <div class="page-hero">
 
-    <div class="container">
+<div class="container">
 
-        <nav aria-label="breadcrumb">
+    <nav aria-label="breadcrumb">
 
-            <ol class="breadcrumb-custom">
+        <ol class="breadcrumb-custom">
 
-                <li>
-                    <a href="{{ route('frontend.home') }}">
-                        Home
-                    </a>
-                </li>
+            <li>
+                <a href="{{ route('frontend.home') }}">
+                    Home
+                </a>
+            </li>
 
-                <li>
-                    Categories
-                </li>
-
-                @if($selectedCategory)
-                    <li>
-                        {{ $selectedCategory->category_name }}
-                    </li>
-                @endif
-
-            </ol>
-
-        </nav>
-
-        <h1 class="page-hero-title">
             @if($selectedCategory)
-                {{ $selectedCategory->category_name }}
-            @else
-                All Categories
+                <li>
+                    {{ $selectedCategory->category_name }}
+                </li>
             @endif
-        </h1>
 
+        </ol>
+
+    </nav>
+
+    <h1 class="page-hero-title">
         @if($selectedCategory)
-            <p class="page-hero-sub">
-                {{ $selectedCategory->description }}
-            </p>
+            {{ $selectedCategory->category_name }}
+        @else
+            All Categories
         @endif
-
-    </div>
+    </h1>
 
 </div>
 
+</div>
 
 <!-- SEARCH BAR -->
-<div class="search-bar-wrap">
 
-    <div class="container">
+<div class="search-bar-wrap" id="searchBarWrap">
 
-        <div class="search-bar">
+<div class="container">
 
-            <i class="bi bi-search search-icon"></i>
+    <div class="search-bar">
 
-            <input
-                type="text"
-                id="searchInput"
-                class="search-input"
-                placeholder="Search categories or products…"
-                autocomplete="off"
-            />
+        <i class="bi bi-search search-icon"></i>
 
-            <button
-                class="search-clear"
-                id="searchClear"
-                aria-label="Clear"
-            >
-                <i class="bi bi-x-lg"></i>
-            </button>
+        <input
+            type="text"
+            id="searchInput"
+            class="search-input"
+            placeholder="Search categories or products…"
+            autocomplete="off"
+        />
 
-        </div>
+        <button
+            class="search-clear"
+            id="searchClear"
+            aria-label="Clear"
+        >
+            <i class="bi bi-x-lg"></i>
+        </button>
 
-        <div
-            class="search-meta"
-            id="searchMeta">
-        </div>
+    </div>
 
+    <div
+        class="search-meta"
+        id="searchMeta">
     </div>
 
 </div>
 
+</div>
 
-<!-- CONTENT -->
+<!-- CATEGORY GRID OR PRODUCT LIST -->
+
 <section class="section-pad">
 
-    <div class="container">
+<div class="container">
 
-        @if($selectedCategory)
+    @if($selectedCategory)
 
-            <!-- BACK TO CATEGORIES -->
-            <div class="mb-4">
-
-                <a
-                    href="{{ route('frontend.categories') }}"
-                    class="btn btn-outline-secondary"
-                >
-                    <i class="bi bi-arrow-left"></i>
-                    Back to Categories
-                </a>
-
-            </div>
-
-
-            <!-- PRODUCTS -->
-            <div
-                id="productGrid"
-                class="product-grid"
-            >
-
-                @forelse($products as $product)
-
-                    @php
-                        $attachment = $product->file_attachments->first();
-
-                        $imageUrl = $attachment
-                            ? asset('storage/' . ltrim($attachment->file_path, '/'))
-                            : asset('images/default-product.jpg');
-                    @endphp
-
-
-                    <div class="product-card">
-
-                        <a
-                            href="{{ route('frontend.product', $product->id) }}"
-                            class="text-decoration-none"
-                        >
-
-                            <div class="product-image">
-
-                                <img
-                                    src="{{ $imageUrl }}"
-                                    alt="{{ $product->product_name }}"
-                                >
-
-                            </div>
-
-
-                            <div class="product-info">
-
-                                @if($product->tag)
-
-                                    <span class="product-tag">
-                                        {{ $product->tag }}
-                                    </span>
-
-                                @endif
-
-                                <h3>
-                                    {{ $product->product_name }}
-                                </h3>
-
-                                @if($product->short_description)
-
-                                    <p>
-                                        {{ $product->short_description }}
-                                    </p>
-
-                                @endif
-
-                                <span class="product-card-action">
-                                    View Product
-                                    <i class="bi bi-arrow-right"></i>
-                                </span>
-
-                            </div>
-
-                        </a>
-
-                    </div>
-
-                @empty
-
-                    <div class="text-center py-5">
-
-                        <i class="bi bi-box-seam fs-1"></i>
-
-                        <p class="mt-3">
-                            No products available in this category.
-                        </p>
-
-                    </div>
-
-                @endforelse
-
-            </div>
-
-        @else
-
-            <!-- CATEGORY GRID -->
-            <div
-                id="categoryGrid"
-                class="category-grid"
-            >
-
-                @forelse($categories as $category)
-
-                    <div class="category-card">
-
-                        <a
-                            href="{{ route('frontend.categories', ['category' => $category->id]) }}"
-                        >
-
-                            <div class="category-icon">
-
-                                <i class="bi bi-grid-fill"></i>
-
-                            </div>
-
-
-                            <div class="category-info">
-
-                                <h3>
-                                    {{ $category->category_name }}
-                                </h3>
-
-                                @if($category->description)
-
-                                    <p>
-                                        {{ $category->description }}
-                                    </p>
-
-                                @endif
-
-                                <span>
-
-                                    {{ $category->products_count }}
-
-                                    {{ $category->products_count == 1 ? 'Product' : 'Products' }}
-
-                                </span>
-
-                            </div>
-
-                        </a>
-
-                    </div>
-
-                @empty
-
-                    <div class="text-center py-5">
-
-                        <i class="bi bi-grid fs-1"></i>
-
-                        <p class="mt-3">
-                            No categories available.
-                        </p>
-
-                    </div>
-
-                @endforelse
-
-            </div>
-
-        @endif
-
-
-        <!-- SEARCH RESULTS -->
-
+        <!-- PRODUCT GRID -->
         <div
-            id="searchResults"
+            id="productGrid"
             class="product-grid"
-            style="display:none;"
-        ></div>
-
-
-        <div
-            id="searchEmpty"
-            class="search-empty"
-            style="display:none;"
         >
 
-            <i class="bi bi-search"></i>
+            @forelse($products as $product)
 
-            <p>
-                No results found
-            </p>
+                @php
+                    $attachment = $product->file_attachments->first();
 
-            <span id="searchEmptyTerm"></span>
+                    $imageUrl = $attachment
+                        ? asset('storage/' . ltrim($attachment->file_path, '/'))
+                        : null;
+                @endphp
+
+
+                <a
+                    href="{{ route('frontend.product', $product->id) }}"
+                    class="product-card"
+                >
+
+                    <!-- PRODUCT IMAGE -->
+                    <div class="product-card-img">
+
+                        @if($imageUrl)
+
+                            <img
+                                src="{{ $imageUrl }}"
+                                alt="{{ $product->product_name }}"
+                                class="product-card-photo"
+                                loading="lazy"
+                            >
+
+                        @else
+
+                            <span class="product-emoji">
+                                🛍️
+                            </span>
+
+                        @endif
+
+
+                        @if($product->tag)
+
+                            <span class="product-badge">
+                                {{ $product->tag }}
+                            </span>
+
+                        @endif
+
+                    </div>
+
+
+                    <!-- PRODUCT BODY -->
+                    <div class="product-card-body">
+
+                        <h5>
+                            {{ $product->product_name }}
+                        </h5>
+
+
+                        @if($product->short_description)
+
+                            <p>
+                                {{ $product->short_description }}
+                            </p>
+
+                        @elseif($product->description)
+
+                            <p>
+                                {{ \Illuminate\Support\Str::limit($product->description, 100) }}
+                            </p>
+
+                        @endif
+
+
+                        <div class="product-card-footer">
+
+                            @if(isset($product->price) && $product->price !== null)
+
+                                <span class="product-price">
+                                    RM {{ number_format($product->price, 2) }}
+                                </span>
+
+                            @else
+
+                                <span class="product-price">
+                                    &nbsp;
+                                </span>
+
+                            @endif
+
+
+                            <span class="product-view-btn">
+                                View
+                                <i class="bi bi-arrow-right"></i>
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </a>
+
+            @empty
+
+                <div class="text-center py-5">
+
+                    <i class="bi bi-box-seam fs-1"></i>
+
+                    <p class="mt-3">
+                        No products available in this category.
+                    </p>
+
+                </div>
+
+            @endforelse
 
         </div>
 
+    @else
+
+        <!-- CATEGORY GRID -->
+        <div
+            id="categoryGrid"
+            class="category-grid"
+        >
+
+            @forelse($categories as $category)
+
+                <a
+                    href="{{ route('frontend.categories', ['category' => $category->id]) }}"
+                    class="category-card"
+                >
+
+                    <!-- CATEGORY ICON -->
+                    <div class="category-card-icon">
+
+                        <i class="bi bi-grid-fill"></i>
+
+                    </div>
+
+
+                    <!-- CATEGORY BODY -->
+                    <div class="category-card-body">
+
+                        <h5>
+                            {{ $category->category_name }}
+                        </h5>
+
+
+                        @if($category->description)
+
+                            <p>
+                                {{ $category->description }}
+                            </p>
+
+                        @endif
+
+
+                        <span class="cat-count">
+
+                            {{ $category->products_count }}
+
+                            {{ $category->products_count == 1 ? 'Product' : 'Products' }}
+
+                        </span>
+
+                    </div>
+
+
+                    <!-- ARROW -->
+                    <i class="bi bi-chevron-right category-arrow"></i>
+
+                </a>
+
+            @empty
+
+                <div class="text-center py-5">
+
+                    <i class="bi bi-grid fs-1"></i>
+
+                    <p class="mt-3">
+                        No categories available.
+                    </p>
+
+                </div>
+
+            @endforelse
+
+        </div>
+
+    @endif
+
+
+    <!-- SEARCH RESULTS -->
+    <div
+        id="searchResults"
+        class="product-grid"
+        style="display:none;"
+    ></div>
+
+
+    <!-- SEARCH EMPTY -->
+    <div
+        id="searchEmpty"
+        class="search-empty"
+        style="display:none;"
+    >
+
+        <i class="bi bi-search"></i>
+
+        <p>
+            No results found
+        </p>
+
+        <span id="searchEmptyTerm"></span>
+
     </div>
+
+</div>
 
 </section>
 

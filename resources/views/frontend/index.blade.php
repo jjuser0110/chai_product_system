@@ -280,68 +280,79 @@
                 id="highlightTrack"
             >
 
-                @forelse($highlights as $product)
+                @php
+                    // Duplicate the list so the track can loop seamlessly,
+                    // matching the marquee effect used on the static site
+                    // (app.js does `[...highlights, ...highlights]`).
+                    $highlightLoop = $highlights->count()
+                        ? $highlights->concat($highlights)
+                        : $highlights;
+                @endphp
+
+                @forelse($highlightLoop as $product)
 
                     @php
                         $attachment = $product->file_attachments->first();
 
                         $productImage = $attachment
                             ? asset('storage/' . ltrim($attachment->file_path, '/'))
-                            : asset('images/default-product.jpg');
+                            : null;
+
+                        $hasPrice = !empty($product->price);
                     @endphp
 
-                    <div class="product-card">
+                    <a
+                        href="{{ route('frontend.product', $product->id) }}"
+                        class="highlight-card"
+                    >
 
-                        <a
-                            href="{{ route('frontend.product', $product->id) }}"
-                            class="product-card-link"
-                        >
+                        <div class="highlight-card-img">
 
-                            <div class="product-image">
+                            @if($productImage)
 
                                 <img
                                     src="{{ $productImage }}"
                                     alt="{{ $product->product_name }}"
+                                    class="highlight-card-photo"
+                                    loading="lazy"
                                 >
 
-                                @if($product->tag)
+                            @else
 
-                                    <span class="product-badge">
-                                        {{ $product->tag }}
-                                    </span>
+                                <span class="highlight-emoji">
+                                    <i class="bi bi-bag-heart"></i>
+                                </span>
 
-                                @endif
+                            @endif
 
-                            </div>
+                            @if($product->tag)
+
+                                <span class="product-badge">
+                                    {{ $product->tag }}
+                                </span>
+
+                            @endif
+
+                        </div>
 
 
-                            <div class="product-info">
+                        <div class="highlight-card-body">
 
-                                @if($product->category)
+                            <h6>
+                                {{ $product->product_name }}
+                            </h6>
 
-                                    <span class="product-category">
-                                        {{ $product->category->category_name }}
-                                    </span>
+                            @if($hasPrice)
 
-                                @endif
+                                <span class="product-price">
+                                    {{ $product->price }}
+                                </span>
 
-                                <h3>
-                                    {{ $product->product_name }}
-                                </h3>
+                            @endif
 
-                                @if($product->short_description)
+                        </div>
 
-                                    <p>
-                                        {{ $product->short_description }}
-                                    </p>
-
-                                @endif
-
-                            </div>
-
-                        </a>
-
-                    </div>
+                    </a>
 
                 @empty
 

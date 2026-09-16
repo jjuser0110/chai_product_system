@@ -45,5 +45,8 @@ $currentRoute = request()->route()->getName();
             </a>
         </li>
     </ul>
+    <div class="p-3 mt-auto border-top">
+        <a class="btn btn-outline-secondary btn-sm w-100" href="{{ url('/') }}" target="_blank"><i class="bx bx-link-external me-1"></i> View live site</a>
+    </div>
 </aside>
 <!-- end: sidebar -->
