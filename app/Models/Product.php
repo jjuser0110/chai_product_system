@@ -14,15 +14,21 @@ class Product extends Model
     protected $fillable = [
         'category_id',
         'product_name',
+        'short_description',
         'description',
+        'tag',
         'arrangement',
         'is_highlight',
         'is_active',
-        'tag',
     ];
-    
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
     public function file_attachments()
     {
-        return $this->morphMany('App\Models\FileAttachment', 'content');
+        return $this->morphMany(FileAttachment::class, 'content');
     }
 }
