@@ -13,7 +13,7 @@
                 </div>
                 <div class="dt-action-buttons text-end pt-3 pt-md-0">
                     <div class="dt-buttons"> 
-                        <a class="dt-button create-new btn btn-primary" type="button" href="{{route('product.create')}}" onclick="showLoading()">
+                        <a class="dt-button create-new btn btn-primary" type="button" href="{{route('productt.create')}}" onclick="showLoading()">
                             <span><i class="bx bx-plus me-sm-1"></i> 
                                 <span class="d-none d-sm-inline-block">Add New Record</span>
                             </span>
@@ -77,8 +77,8 @@
                                     Action
                                 </button>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{{ route('product.edit',$row) }}" onclick="showLoading()">Edit</a></li>
-                                    <li><a class="dropdown-item" style="color:red;cursor:pointer" onclick="if(confirm('Are you sure you want to delete?')){showLoading();window.location.href='{{ route('product.destroy',$row) }}'}">Delete</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('productt.edit',$row) }}" onclick="showLoading()">Edit</a></li>
+                                    <li><a class="dropdown-item" style="color:red;cursor:pointer" onclick="if(confirm('Are you sure you want to delete?')){showLoading();window.location.href='{{ route('productt.destroy',$row) }}'}">Delete</a></li>
                                     <li>
                                 </ul>
                                 </div>

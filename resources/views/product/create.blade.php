@@ -3,7 +3,7 @@
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
     <h4 class="py-3 breadcrumb-wrapper mb-4">
-        <a class="text-muted fw-light" href="{{route('product.index')}}">Products /</a> 
+        <a class="text-muted fw-light" href="{{route('productt.index')}}">Products /</a> 
          @if (isset($product)) Edit @else Create @endif
     </h4>
     <div class="row">
@@ -11,7 +11,7 @@
             <div class="card">
             <h5 class="card-header">Products Details</h5>
             <div class="card-body">
-                <form class="row g-3" enctype="multipart/form-data" @if (isset($product)) method="post" action="{{ route('product.update',$product) }}" @else method="post" action="{{ route('product.store') }}" @endif onsubmit="showLoading()">
+                <form class="row g-3" enctype="multipart/form-data" @if (isset($product)) method="post" action="{{ route('productt.update',$product) }}" @else method="post" action="{{ route('productt.store') }}" @endif onsubmit="showLoading()">
                 @csrf
                 <div class="col-md-7">
                     <label class="form-label" for="product_name">Products Name</label>
