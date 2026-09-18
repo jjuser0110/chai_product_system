@@ -45,7 +45,7 @@ class ProducttController extends Controller
             }
         }
 
-        return redirect()->route('product.index')->withSuccess('Data saved');
+        return redirect()->route('productt.index')->withSuccess('Data saved');
     }
 
     public function edit(Product $product)
@@ -69,17 +69,17 @@ class ProducttController extends Controller
                 $product->file_attachments()->create($request->all());
             }
         }
-        return redirect()->route('product.index')->withSuccess('Data updated');
+        return redirect()->route('productt.index')->withSuccess('Data updated');
     }
 
     public function destroy(Product $product)
     {
         if($product->categories()->count()>0){
-            return redirect()->route('product.index')->withErrors('Product has related categories. You can not delete this.');
+            return redirect()->route('productt.index')->withErrors('Product has related categories. You can not delete this.');
         }
         $product->delete();
 
-        return redirect()->route('product.index')->withSuccess('Data deleted');
+        return redirect()->route('productt.index')->withSuccess('Data deleted');
     }
 
 }
