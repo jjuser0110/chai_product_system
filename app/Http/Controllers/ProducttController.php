@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
-class ProductController extends Controller
+class ProducttController extends Controller
 {
     public function index(Request $request)
     {

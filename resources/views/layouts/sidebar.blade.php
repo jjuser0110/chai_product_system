@@ -26,8 +26,8 @@ $currentRoute = request()->route()->getName();
                 <div>Category</div>
             </a>
         </li>
-        <li class="menu-item {{ Str::contains($currentRoute, 'product.index') ? 'active' : ''}}">
-            <a href="{{ route('product.index') }}" class="menu-link">
+        <li class="menu-item {{ Str::contains($currentRoute, 'productt.index') ? 'active' : ''}}">
+            <a href="{{ route('productt.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-spreadsheet"></i>
                 <div>Products</div>
             </a>
