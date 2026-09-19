@@ -3,7 +3,126 @@
 @section('title', 'Tsuki – Highlights')
 
 @section('content')
+<style>
+  /* ========================================
+   PRODUCT IMAGE POPUP
+======================================== */
 
+.product-image-popup-trigger {
+    width: 100%;
+    height: 100%;
+    cursor: zoom-in;
+    overflow: hidden;
+}
+
+.product-image-popup-trigger .product-card-photo {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+
+/* Popup overlay */
+.product-image-modal {
+    display: none;
+
+    position: fixed;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background: rgba(0, 0, 0, 0.88);
+
+    z-index: 99999;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 30px;
+
+    cursor: zoom-out;
+}
+
+
+/* Popup image */
+.product-image-modal img {
+    max-width: 95%;
+    max-height: 90vh;
+
+    width: auto;
+    height: auto;
+
+    object-fit: contain;
+
+    border-radius: 10px;
+
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+
+    cursor: default;
+}
+
+
+/* Close button */
+.product-image-modal-close {
+    position: absolute;
+
+    top: 20px;
+    right: 25px;
+
+    width: 48px;
+    height: 48px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.95);
+
+    color: #222;
+
+    font-size: 32px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 100000;
+
+    transition: 0.2s ease;
+}
+
+.product-image-modal-close:hover {
+    background: #fff;
+    transform: scale(1.05);
+}
+
+
+/* Mobile */
+@media (max-width: 768px) {
+
+    .product-image-modal {
+        padding: 15px;
+    }
+
+    .product-image-modal img {
+        max-width: 100%;
+        max-height: 85vh;
+    }
+
+    .product-image-modal-close {
+        top: 15px;
+        right: 15px;
+
+        width: 42px;
+        height: 42px;
+
+        font-size: 28px;
+    }
+}
+</style>
   <!-- PAGE HERO -->
   <div class="page-hero page-hero--highlight">
 
@@ -124,12 +243,22 @@
 
               @if($productImage)
 
-                <img
-                  src="{{ $productImage }}"
-                  alt="{{ $product->product_name }}"
-                  class="product-card-photo"
-                  loading="lazy"
-                />
+                <div
+                  class="product-image-popup-trigger"
+                  data-image="{{ $productImage }}"
+                  data-title="{{ $product->product_name }}"
+                  onclick="event.preventDefault(); event.stopPropagation(); openProductImage(this);"
+                >
+
+                  <img
+                    src="{{ $productImage }}"
+                    alt="{{ $product->product_name }}"
+                    class="product-card-photo"
+                    loading="lazy"
+                  />
+
+                </div>
+
 
                 @if($imageCount > 1)
 
@@ -148,9 +277,7 @@
 
               @endif
 
-
             </div>
-
 
             <!-- PRODUCT BODY -->
             <div class="product-card-body">
@@ -231,7 +358,29 @@
     </div>
 
   </section>
+  {{-- PRODUCT IMAGE POPUP --}}
+  <div
+      id="productImageModal"
+      class="product-image-modal"
+      onclick="closeProductImage(event)"
+  >
 
+      <button
+          type="button"
+          class="product-image-modal-close"
+          onclick="closeProductImage(event)"
+          aria-label="Close"
+      >
+          &times;
+      </button>
+
+      <img
+          id="productPopupImage"
+          src=""
+          alt=""
+      >
+
+  </div>
 @endsection
 
 @push('scripts')
@@ -314,7 +463,81 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 });
+/* ========================================
+   PRODUCT IMAGE POPUP
+======================================== */
 
+function openProductImage(element) {
+
+var imageUrl = element.getAttribute('data-image');
+var title = element.getAttribute('data-title');
+
+var modal = document.getElementById('productImageModal');
+var popupImage = document.getElementById('productPopupImage');
+
+if (!modal || !popupImage) {
+    return;
+}
+
+popupImage.src = imageUrl;
+popupImage.alt = title || '';
+
+modal.style.display = 'flex';
+
+document.body.style.overflow = 'hidden';
+}
+
+
+function closeProductImage(event) {
+
+/*
+ * If clicking the actual image,
+ * don't close the popup.
+ */
+if (event.target.id === 'productPopupImage') {
+    return;
+}
+
+var modal = document.getElementById('productImageModal');
+var popupImage = document.getElementById('productPopupImage');
+
+if (!modal) {
+    return;
+}
+
+modal.style.display = 'none';
+
+if (popupImage) {
+    popupImage.src = '';
+}
+
+document.body.style.overflow = '';
+}
+
+
+/* Close popup with ESC */
+document.addEventListener('keydown', function(event) {
+
+if (event.key === 'Escape') {
+
+    var modal = document.getElementById('productImageModal');
+
+    if (modal && modal.style.display === 'flex') {
+
+        modal.style.display = 'none';
+
+        var popupImage =
+            document.getElementById('productPopupImage');
+
+        if (popupImage) {
+            popupImage.src = '';
+        }
+
+        document.body.style.overflow = '';
+    }
+}
+
+});
 </script>
 
 @endpush

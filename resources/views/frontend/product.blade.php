@@ -3,7 +3,122 @@
 @section('title', 'Tsuki – ' . $product->product_name)
 
 @section('content')
+<style>
+    /* =========================================
+   PRODUCT DETAIL IMAGE POPUP
+========================================= */
 
+.product-detail-popup-image {
+    cursor: zoom-in;
+}
+
+
+/* Popup overlay */
+
+.product-detail-image-modal {
+    display: none;
+
+    position: fixed;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background: rgba(0, 0, 0, 0.88);
+
+    z-index: 999999;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 30px;
+
+    cursor: zoom-out;
+}
+
+
+/* Large popup image */
+
+.product-detail-image-modal img {
+    max-width: 95%;
+    max-height: 90vh;
+
+    width: auto;
+    height: auto;
+
+    object-fit: contain;
+
+    border-radius: 10px;
+
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+
+    cursor: default;
+}
+
+
+/* Close button */
+
+.product-detail-image-close {
+    position: absolute;
+
+    top: 20px;
+    right: 25px;
+
+    width: 48px;
+    height: 48px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.95);
+
+    color: #222;
+
+    font-size: 32px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 1000000;
+
+    transition: all 0.2s ease;
+}
+
+.product-detail-image-close:hover {
+    background: #fff;
+    transform: scale(1.05);
+}
+
+
+/* Mobile */
+
+@media (max-width: 768px) {
+
+    .product-detail-image-modal {
+        padding: 15px;
+    }
+
+    .product-detail-image-modal img {
+        max-width: 100%;
+        max-height: 85vh;
+    }
+
+    .product-detail-image-close {
+        top: 15px;
+        right: 15px;
+
+        width: 42px;
+        height: 42px;
+
+        font-size: 28px;
+    }
+
+}
+</style>
 <!-- PRODUCT PAGE HERO -->
 
 <div class="page-hero">
@@ -89,13 +204,19 @@
 
                             @foreach($images as $index => $image)
 
-                                <div class="img-slide">
-                                    <img
-                                        src="{{ $image }}"
-                                        alt="{{ $product->product_name }} photo {{ $index + 1 }}"
-                                        loading="{{ $index === 0 ? 'eager' : 'lazy' }}"
-                                    >
-                                </div>
+                            <div class="img-slide">
+
+                            <img
+                                src="{{ $image }}"
+                                alt="{{ $product->product_name }} photo {{ $index + 1 }}"
+                                loading="{{ $index === 0 ? 'eager' : 'lazy' }}"
+                                class="product-detail-popup-image"
+                                data-image="{{ $image }}"
+                                data-title="{{ $product->product_name }}"
+                                onclick="openProductDetailImage(this)"
+                            >
+
+                            </div>
 
                             @endforeach
 
@@ -189,17 +310,6 @@
 
                     @endif
 
-                    @if($product->tag && $hasImages)
-
-                        <span
-                            class="product-badge product-badge--lg"
-                            style="position:relative;top:auto;left:auto;display:inline-block;margin-bottom:10px;"
-                        >
-                            {{ $product->tag }}
-                        </span>
-
-                    @endif
-
                     <h1 class="product-detail-name">
                         {{ $product->product_name }}
                     </h1>
@@ -283,7 +393,30 @@
 </div>
 
 </section>
+{{-- PRODUCT DETAIL IMAGE POPUP --}}
 
+<div
+    id="productDetailImageModal"
+    class="product-detail-image-modal"
+    onclick="closeProductDetailImage(event)"
+>
+
+    <button
+        type="button"
+        class="product-detail-image-close"
+        onclick="closeProductDetailImage(event)"
+        aria-label="Close"
+    >
+        &times;
+    </button>
+
+    <img
+        id="productDetailPopupImage"
+        src=""
+        alt=""
+    >
+
+</div>
 <!-- RELATED PRODUCTS -->
 
 @if($product->category)
@@ -509,6 +642,210 @@ document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('keydown', function (e) {
         if (e.key === 'ArrowLeft')  goTo(current - 1);
         if (e.key === 'ArrowRight') goTo(current + 1);
+    });
+
+});
+
+/* =========================================
+   PRODUCT DETAIL IMAGE POPUP
+========================================= */
+
+function openProductDetailImage(element) {
+
+    var imageUrl = element.getAttribute('data-image');
+    var title = element.getAttribute('data-title');
+
+    var modal = document.getElementById('productDetailImageModal');
+    var popupImage = document.getElementById('productDetailPopupImage');
+
+    if (!modal || !popupImage) {
+        return;
+    }
+
+    popupImage.src = imageUrl;
+    popupImage.alt = title || '';
+
+    modal.style.display = 'flex';
+
+    document.body.style.overflow = 'hidden';
+}
+
+
+function closeProductDetailImage(event) {
+
+    /*
+     * Don't close when clicking
+     * the popup image itself.
+     */
+    if (event.target.id === 'productDetailPopupImage') {
+        return;
+    }
+
+    var modal = document.getElementById('productDetailImageModal');
+    var popupImage = document.getElementById('productDetailPopupImage');
+
+    if (!modal) {
+        return;
+    }
+
+    modal.style.display = 'none';
+
+    if (popupImage) {
+        popupImage.src = '';
+    }
+
+    document.body.style.overflow = '';
+}
+
+
+/* ESC to close */
+
+document.addEventListener('keydown', function(event) {
+
+    if (event.key === 'Escape') {
+
+        var modal =
+            document.getElementById('productDetailImageModal');
+
+        if (modal && modal.style.display === 'flex') {
+
+            modal.style.display = 'none';
+
+            var popupImage =
+                document.getElementById('productDetailPopupImage');
+
+            if (popupImage) {
+                popupImage.src = '';
+            }
+
+            document.body.style.overflow = '';
+        }
+
+    }
+
+});
+
+
+/* =========================================
+   EXISTING PRODUCT SLIDER
+========================================= */
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    var slider = document.getElementById('imgSlider');
+
+    if (!slider) return;
+
+    var track   = document.getElementById('imgTrack');
+    var dots    = document.querySelectorAll('.img-dot');
+    var thumbs  = document.querySelectorAll('.img-thumb');
+    var counter = document.getElementById('sliderCounter');
+    var prevBtn = document.getElementById('sliderPrev');
+    var nextBtn = document.getElementById('sliderNext');
+
+    if (!prevBtn || !nextBtn) return;
+
+    var total   = track.children.length;
+    var current = 0;
+
+    function goTo(index) {
+
+        current = (index + total) % total;
+
+        track.style.transform =
+            'translateX(-' + (current * 100) + '%)';
+
+        dots.forEach(function (d, i) {
+            d.classList.toggle(
+                'active',
+                i === current
+            );
+        });
+
+        thumbs.forEach(function (t, i) {
+            t.classList.toggle(
+                'active',
+                i === current
+            );
+        });
+
+        if (counter) {
+            counter.textContent =
+                (current + 1) + ' / ' + total;
+        }
+    }
+
+    prevBtn.addEventListener('click', function () {
+        goTo(current - 1);
+    });
+
+    nextBtn.addEventListener('click', function () {
+        goTo(current + 1);
+    });
+
+    dots.forEach(function (d) {
+
+        d.addEventListener('click', function () {
+            goTo(+d.dataset.index);
+        });
+
+    });
+
+    thumbs.forEach(function (t) {
+
+        t.addEventListener('click', function () {
+            goTo(+t.dataset.index);
+        });
+
+    });
+
+
+    /* Touch / swipe */
+
+    var touchStartX = 0;
+
+    slider.addEventListener(
+        'touchstart',
+        function (e) {
+            touchStartX = e.touches[0].clientX;
+        },
+        { passive: true }
+    );
+
+    slider.addEventListener(
+        'touchend',
+        function (e) {
+
+            var diff =
+                touchStartX -
+                e.changedTouches[0].clientX;
+
+            if (Math.abs(diff) > 40) {
+
+                goTo(
+                    diff > 0
+                        ? current + 1
+                        : current - 1
+                );
+
+            }
+
+        }
+    );
+
+
+    /* Keyboard arrows */
+
+    document.addEventListener('keydown', function (e) {
+
+        if (e.key === 'ArrowLeft') {
+            goTo(current - 1);
+        }
+
+        if (e.key === 'ArrowRight') {
+            goTo(current + 1);
+        }
+
     });
 
 });

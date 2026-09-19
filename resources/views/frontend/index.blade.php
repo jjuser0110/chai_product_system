@@ -3,7 +3,200 @@
 @section('title', 'Tsuki – Home')
 
 @section('content')
+<style>
+    /* =========================
+    HIGHLIGHT CARD SIZE
+    ========================= */
 
+    .highlight-track {
+        height: auto !important;
+        min-height: 0 !important;
+    }
+
+    .highlight-card {
+        height: auto !important;
+        min-height: 0 !important;
+    }
+
+    .highlight-card-img {
+        height: 280px !important;
+        overflow: hidden;
+    }
+
+    .highlight-card-photo {
+        width: 100% !important;
+        height: 280px !important;
+        object-fit: cover !important;
+        display: block;
+    }
+
+    .highlight-card-body {
+        padding-left: 14px !important;
+        padding-right: 14px !important;
+       
+        
+        min-height: 20px !important;
+        height: auto !important;
+    }
+
+    .highlight-card-body h6 {
+        margin: 0 0 6px 0 !important;
+    }
+    /* =========================
+    HERO BANNER
+    ========================= */
+
+    .hero-slider {
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .hero-slider .carousel,
+    .hero-slider .carousel-inner,
+    .hero-slider .carousel-item {
+        width: 100%;
+    }
+
+    /* Fixed banner size */
+    .banner-slide {
+        width: 100%;
+        height: 420px;
+
+        /* Make image fill the ENTIRE banner */
+        background-size: 100% 100%;
+        background-position: center center;
+        background-repeat: no-repeat;
+
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Optional dark overlay */
+    .banner-slide::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.15);
+        z-index: 1;
+    }
+
+    /* Banner text */
+    .banner-content {
+        position: relative;
+        z-index: 2;
+    }
+/* =========================
+   HIGHLIGHT IMAGE POPUP
+========================= */
+
+.highlight-image-popup-trigger {
+    width: 100%;
+    height: 100%;
+    cursor: zoom-in;
+    overflow: hidden;
+}
+
+.highlight-image-popup-trigger img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+
+/* Popup background */
+.highlight-image-modal {
+    display: none;
+    position: fixed;
+    z-index: 99999;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background: rgba(0, 0, 0, 0.85);
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 30px;
+}
+
+
+/* Popup image */
+.highlight-image-modal img {
+    max-width: 95%;
+    max-height: 90vh;
+
+    width: auto;
+    height: auto;
+
+    object-fit: contain;
+
+    border-radius: 10px;
+
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+
+/* Close button */
+.highlight-image-modal-close {
+    position: absolute;
+
+    top: 20px;
+    right: 30px;
+
+    width: 45px;
+    height: 45px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.9);
+
+    color: #222;
+
+    font-size: 30px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 100000;
+}
+
+.highlight-image-modal-close:hover {
+    background: #fff;
+}
+
+
+/* Mobile */
+@media (max-width: 768px) {
+    .banner-slide {
+        height: 260px;
+
+        /* Still force image to cover the whole banner */
+        background-size: 100% 100%;
+    }
+    .highlight-image-modal {
+        padding: 15px;
+    }
+
+    .highlight-image-modal img {
+        max-width: 100%;
+        max-height: 85vh;
+    }
+
+    .highlight-image-modal-close {
+        top: 15px;
+        right: 15px;
+    }
+}
+
+</style>
     <!-- HERO BANNER SLIDER -->
     <section class="hero-slider">
         <div
@@ -146,7 +339,7 @@
 
 
     <!-- ABOUT US SECTION -->
-    <section class="about-section">
+    <!-- <section class="about-section">
 
         <div class="container">
 
@@ -241,7 +434,7 @@
 
         </div>
 
-    </section>
+    </section> -->
 
 
     <!-- HIGHLIGHT GIRLS -->
@@ -278,7 +471,7 @@
 
             <div
                 class="highlight-track"
-                id="highlightTrack" style="height:300px"
+                id="highlightTrack"
             >
 
                 @php
@@ -307,16 +500,24 @@
                         class="highlight-card"
                     >
 
+                        {{-- IMAGE --}}
                         <div class="highlight-card-img">
 
                             @if($productImage)
 
-                                <img
-                                    src="{{ $productImage }}"
-                                    alt="{{ $product->product_name }}"
-                                    class="highlight-card-photo"
-                                    loading="lazy" style="height:330px !important"
+                                <div
+                                    class="highlight-image-popup-trigger"
+                                    data-image="{{ $productImage }}"
+                                    data-title="{{ $product->product_name }}"
+                                    onclick="event.preventDefault(); event.stopPropagation(); openHighlightImage(this);"
                                 >
+                                    <img
+                                        src="{{ $productImage }}"
+                                        alt="{{ $product->product_name }}"
+                                        class="highlight-card-photo"
+                                        loading="lazy"
+                                    >
+                                </div>
 
                             @else
 
@@ -329,18 +530,17 @@
                         </div>
 
 
-                        <div class="highlight-card-body" style="padding-left:14px !important;padding-right:14px !important;padding-top:110px !important;">
+                        {{-- CARD BODY --}}
+                        <div class="highlight-card-body">
 
                             <h6>
                                 {{ $product->product_name }}
                             </h6>
 
                             @if($hasPrice)
-
                                 <span class="product-price">
                                     {{ $product->price }}
                                 </span>
-
                             @endif
 
                         </div>
@@ -397,5 +597,83 @@
         </div>
 
     </section>
+    {{-- HIGHLIGHT IMAGE POPUP --}}
+    <div
+        id="highlightImageModal"
+        class="highlight-image-modal"
+        onclick="closeHighlightImage(event)"
+    >
 
+        <button
+            type="button"
+            class="highlight-image-modal-close"
+            onclick="closeHighlightImage(event)"
+            aria-label="Close"
+        >
+            &times;
+        </button>
+
+        <img
+            id="highlightPopupImage"
+            src=""
+            alt=""
+        >
+
+    </div>
+
+<script>
+    function openHighlightImage(element) {
+
+        const imageUrl = element.getAttribute('data-image');
+        const title = element.getAttribute('data-title');
+
+        const modal = document.getElementById('highlightImageModal');
+        const popupImage = document.getElementById('highlightPopupImage');
+
+        popupImage.src = imageUrl;
+        popupImage.alt = title || '';
+
+        modal.style.display = 'flex';
+
+        document.body.style.overflow = 'hidden';
+    }
+
+
+    function closeHighlightImage(event) {
+
+        // Don't close when clicking the image itself
+        if (
+            event.target.id === 'highlightPopupImage'
+        ) {
+            return;
+        }
+
+        const modal = document.getElementById('highlightImageModal');
+
+        modal.style.display = 'none';
+
+        document.getElementById('highlightPopupImage').src = '';
+
+        document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', function(event) {
+
+        if (event.key === 'Escape') {
+
+            const modal = document.getElementById('highlightImageModal');
+
+            if (modal.style.display === 'flex') {
+                modal.style.display = 'none';
+
+                document.getElementById('highlightPopupImage').src = '';
+
+                document.body.style.overflow = '';
+            }
+
+        }
+
+    });
+
+</script>
 @endsection

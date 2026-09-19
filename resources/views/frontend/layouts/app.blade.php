@@ -105,10 +105,8 @@
                 class="tsuki-logo">
         </a>
         </span>
-        @if(!empty($whatsapp))
-
         <a
-            href="{{ $whatsapp }}"
+            href="https://wa.me/{{ config('tsuki.whatsapp_number', '60123456789') }}"
             target="_blank"
             class="topbar-icon-btn topbar-whatsapp"
             aria-label="WhatsApp"
@@ -116,21 +114,14 @@
             <i class="bi bi-whatsapp"></i>
         </a>
 
-        @endif
-
-
-        @if(!empty($telegram))
-
         <a
-            href="{{ $telegram }}"
+            href="{{ config('tsuki.telegram_url', '#') }}"
             target="_blank"
             class="topbar-icon-btn topbar-telegram"
             aria-label="Telegram"
         >
             <i class="bi bi-telegram"></i>
         </a>
-
-        @endif
         <button
             class="sidebar-close"
             id="sidebarClose"
