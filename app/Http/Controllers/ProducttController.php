@@ -50,17 +50,8 @@ class ProducttController extends Controller
             'is_highlight' => 'required|boolean',
             'file_attachment.*' => 'nullable|image',
         ]);
-        if ($request->hasFile('file_attachment')) {
-            foreach ($request->file('file_attachment') as $file) {
-                $upload = $this->upload($file, 'product', $product->id);
-                $request->merge([
-                    'file_name'=>$upload['file_name'],
-                    'file_path'=>$upload['file_path'],
-                    'file_type'=>$upload['file_type']
-                ]);
-                $product->file_attachments()->create($request->all());
-            }
-        }
+    
+        // 1. Create product first
         $product = Product::create([
             'product_name' => $request->product_name,
             'category_id' => $request->category_id,
@@ -71,13 +62,28 @@ class ProducttController extends Controller
             'is_active' => 1,
         ]);
     
-        // Your existing image upload logic stays here.
+        // 2. Upload attachments
+        if ($request->hasFile('file_attachment')) {
+            foreach ($request->file('file_attachment') as $file) {
+    
+                $upload = $this->upload(
+                    $file,
+                    'product',
+                    $product->id
+                );
+    
+                $product->file_attachments()->create([
+                    'file_name' => $upload['file_name'],
+                    'file_path' => $upload['file_path'],
+                    'file_type' => $upload['file_type'],
+                ]);
+            }
+        }
     
         return redirect()
             ->route('productt.index')
-            ->with('success', 'Girls created successfully.');
+            ->with('success', 'Product created successfully.');
     }
-
     public function edit(Product $product)
     {
         $category = Category::orderBy('category_name')->get();
