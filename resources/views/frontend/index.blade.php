@@ -33,8 +33,6 @@
     .highlight-card-body {
         padding-left: 14px !important;
         padding-right: 14px !important;
-       
-        
         min-height: 20px !important;
         height: auto !important;
     }

@@ -4,6 +4,17 @@
 
 @section('content')
 <style>
+/* ========================================
+   HIGHLIGHT PRODUCT IMAGE
+======================================== */
+
+.product-card-img {
+    width: 100%;
+    height: 280px !important;
+    overflow: hidden;
+}
+
+
   /* ========================================
    PRODUCT IMAGE POPUP
 ======================================== */
@@ -13,14 +24,15 @@
     height: 100%;
     cursor: zoom-in;
     overflow: hidden;
+    display: block;
 }
 
 .product-image-popup-trigger .product-card-photo {
     width: 100%;
     height: 100%;
     display: block;
+    object-fit: cover;
 }
-
 
 /* Popup overlay */
 .product-image-modal {

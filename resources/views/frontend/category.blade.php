@@ -5,103 +5,121 @@
 @section('content')
 <style>
     /* =========================================
-   IMAGE POPUP
-========================================= */
+    CATEGORY PRODUCT IMAGE
+    LONG RECTANGLE - NOT SQUARE
+    ========================================= */
 
-.image-popup {
-    position: fixed;
-    inset: 0;
-    z-index: 99999;
+    .product-card-img {
+        width: 100%;
+        height: 280px !important;
+        overflow: hidden;
+    }
 
-    display: none;
-    align-items: center;
-    justify-content: center;
+    .product-card-photo.product-image-popup {
+        width: 100% !important;
+        height: 280px !important;
+        display: block;
+        object-fit: cover;
+        cursor: zoom-in;
+    }
+    /* =========================================
+    IMAGE POPUP
+    ========================================= */
 
-    padding: 30px;
+    .image-popup {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
 
-    background: rgba(0, 0, 0, 0.85);
+        display: none;
+        align-items: center;
+        justify-content: center;
 
-    backdrop-filter: blur(5px);
-}
+        padding: 30px;
 
-.image-popup.show {
-    display: flex;
-}
+        background: rgba(0, 0, 0, 0.85);
 
-.image-popup-content {
-    position: relative;
+        backdrop-filter: blur(5px);
+    }
 
-    max-width: 90vw;
-    max-height: 90vh;
+    .image-popup.show {
+        display: flex;
+    }
 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
+    .image-popup-content {
+        position: relative;
 
-.image-popup-content img {
-    display: block;
+        max-width: 90vw;
+        max-height: 90vh;
 
-    max-width: 90vw;
-    max-height: 82vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
 
-    width: auto;
-    height: auto;
+    .image-popup-content img {
+        display: block;
 
-    object-fit: contain;
+        max-width: 90vw;
+        max-height: 82vh;
 
-    border-radius: 12px;
+        width: auto;
+        height: auto;
 
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-}
+        object-fit: contain;
 
-.image-popup-close {
-    position: fixed;
+        border-radius: 12px;
 
-    top: 20px;
-    right: 25px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    }
 
-    width: 45px;
-    height: 45px;
+    .image-popup-close {
+        position: fixed;
 
-    border: none;
-    border-radius: 50%;
+        top: 20px;
+        right: 25px;
 
-    background: rgba(255, 255, 255, 0.95);
-    color: #222;
+        width: 45px;
+        height: 45px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+        border: none;
+        border-radius: 50%;
 
-    font-size: 20px;
+        background: rgba(255, 255, 255, 0.95);
+        color: #222;
 
-    cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-    z-index: 100000;
+        font-size: 20px;
 
-    transition: all 0.2s ease;
-}
+        cursor: pointer;
 
-.image-popup-close:hover {
-    transform: scale(1.08);
-}
+        z-index: 100000;
 
-.image-popup-title {
-    margin-top: 15px;
+        transition: all 0.2s ease;
+    }
 
-    color: #fff;
+    .image-popup-close:hover {
+        transform: scale(1.08);
+    }
 
-    font-size: 18px;
-    font-weight: 600;
+    .image-popup-title {
+        margin-top: 15px;
 
-    text-align: center;
-}
+        color: #fff;
 
-.product-image-popup {
-    cursor: zoom-in;
-}
+        font-size: 18px;
+        font-weight: 600;
+
+        text-align: center;
+    }
+
+    .product-image-popup {
+        cursor: zoom-in;
+    }
 </style>
 <!-- PAGE HERO -->
 
@@ -233,14 +251,6 @@
 
                         @endif
 
-
-                        @if($product->tag)
-
-                            <span class="product-badge">
-                                {{ $product->tag }}
-                            </span>
-
-                        @endif
 
                     </div>
 
