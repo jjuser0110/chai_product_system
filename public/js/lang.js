@@ -2,6 +2,10 @@
 // SHOPNEST — LANG.JS  (English · 中文 · BM)
 // =============================================
 
+// Change this once to rename the brand everywhere in this file.
+const BRAND = 'Tsuki';
+const YEAR  = new Date().getFullYear();
+
 const LANG_DATA = {
 
   en: {
@@ -9,7 +13,7 @@ const LANG_DATA = {
     nav_category:  'Category',
     nav_highlight: 'Highlight',
     nav_contact:   'Contact Us',
-    sidebar_footer: '© 2026 ShopNest. All rights reserved.',
+    sidebar_footer: `© ${YEAR} ${BRAND}. All rights reserved.`,
 
     banner_tag_1: 'New Arrival',    banner_title_1: 'Discover <br/>Premium Quality',
     banner_sub_1: 'Shop the finest selection curated just for you', banner_btn_1: 'Shop Now',
@@ -22,11 +26,12 @@ const LANG_DATA = {
 
     about_tag: 'Who We Are', about_title: 'Your Trusted', about_title_acc: 'Online Store',
     about_icon_1: 'Trusted', about_icon_2: 'Fast Delivery', about_icon_3: 'Quality', about_icon_4: '24/7 Support',
-    about_p1: 'At ShopNest, we believe great products should be accessible to everyone. Founded with a passion for quality and customer satisfaction, we bring you a carefully curated selection of items across every category.',
-    about_p2: 'Our team hand-picks every product to ensure it meets our high standards. With fast shipping, easy returns, and dedicated support, shopping with us is always a pleasure.',
-    about_stat_products: 'Products', about_stat_customers: 'Happy Customers', about_stat_rating: 'Rating',
+    about_p1: `At ${BRAND}, we believe great girls should be accessible to everyone. Founded with a passion for quality and customer satisfaction, we bring you a carefully curated selection of items across every category — from everyday essentials to unique finds.`,
+    about_p2: 'Our team hand-picks every girl to ensure she meets our high standards. With fast shipping, easy returns, and dedicated support, shopping with us is always a pleasure.',
+    about_stat_products: 'Girls', about_stat_customers: 'Happy Customers', about_stat_rating: 'Rating',
 
-    highlight_tag: 'Featured', highlight_title: 'Highlight', highlight_acc: 'Products', view_all: 'View All',
+    highlight_tag: 'Featured', highlight_title: 'Highlight', highlight_acc: 'Girls', view_all: 'View All',
+    highlight_empty: 'No highlighted girls available.',
 
     contact_strip_title: 'Got Questions?', contact_strip_acc: "We're Here!",
     contact_strip_sub: 'Reach out via WhatsApp, Telegram, or give us a call. We respond within minutes.',
@@ -58,7 +63,7 @@ const LANG_DATA = {
 
   zh: {
     nav_home: '首页', nav_category: '分类', nav_highlight: '精选', nav_contact: '联系我们',
-    sidebar_footer: '© 2026 ShopNest. 版权所有。',
+    sidebar_footer: `© ${YEAR} ${BRAND}. 版权所有。`,
 
     banner_tag_1: '新品上架',  banner_title_1: '探索 <br/>优质产品',
     banner_sub_1: '为您精心挑选最优质的商品',  banner_btn_1: '立即购买',
@@ -71,11 +76,12 @@ const LANG_DATA = {
 
     about_tag: '关于我们', about_title: '您信赖的', about_title_acc: '网上商店',
     about_icon_1: '值得信赖', about_icon_2: '快速配送', about_icon_3: '优质保证', about_icon_4: '全天候支持',
-    about_p1: '在 ShopNest，我们相信优质产品应人人可及。我们以对品质和客户满意度的热情为基础，为您精心策划各类商品。',
-    about_p2: '我们的团队亲自挑选每一件产品，确保符合我们的高标准。快速配送、轻松退货、专属客服，让您购物无忧。',
-    about_stat_products: '件产品', about_stat_customers: '位满意顾客', about_stat_rating: '星评分',
+    about_p1: `在 ${BRAND}，我们相信优秀的女孩应人人可及。我们以对品质和客户满意度的热情为基础，为您精心策划各类商品，从日常必需品到独特精选。`,
+    about_p2: '我们的团队亲自挑选每一位女孩，确保符合我们的高标准。快速配送、轻松退货、专属客服，让您购物无忧。',
+    about_stat_products: '位女孩', about_stat_customers: '位满意顾客', about_stat_rating: '星评分',
 
-    highlight_tag: '精选推荐', highlight_title: '热门', highlight_acc: '产品', view_all: '查看全部',
+    highlight_tag: '精选推荐', highlight_title: '热门', highlight_acc: '女孩', view_all: '查看全部',
+    highlight_empty: '暂无精选女孩。',
 
     contact_strip_title: '有疑问？', contact_strip_acc: '我们在这里！',
     contact_strip_sub: '通过 WhatsApp、Telegram 联系我们，或拨打电话。我们在几分钟内回复。',
@@ -107,7 +113,7 @@ const LANG_DATA = {
 
   ms: {
     nav_home: 'Laman Utama', nav_category: 'Kategori', nav_highlight: 'Pilihan', nav_contact: 'Hubungi Kami',
-    sidebar_footer: '© 2026 ShopNest. Hak cipta terpelihara.',
+    sidebar_footer: `© ${YEAR} ${BRAND}. Hak cipta terpelihara.`,
 
     banner_tag_1: 'Kemasukan Baru',    banner_title_1: 'Temui <br/>Kualiti Premium',
     banner_sub_1: 'Pilihan terbaik yang dipilih khas untuk anda',  banner_btn_1: 'Beli Sekarang',
@@ -118,13 +124,14 @@ const LANG_DATA = {
     banner_tag_4: 'Penghantaran Percuma', banner_title_4: 'Beli Melebihi <br/>RM100 Penghantaran Percuma',
     banner_sub_4: 'Kami hantar terus ke pintu rumah anda',         banner_btn_4: 'Hubungi Kami',
 
-    about_tag: 'Tentang Kami', about_title: 'Kedai Dalam Talian', about_title_acc: 'Anda Yang Dipercayai',
+    about_tag: 'Tentang Kami', about_title: 'Kedai Dalam Talian', about_title_acc: 'Yang Anda Percayai',
     about_icon_1: 'Dipercayai', about_icon_2: 'Penghantaran Pantas', about_icon_3: 'Berkualiti', about_icon_4: 'Sokongan 24/7',
-    about_p1: 'Di ShopNest, kami percaya produk berkualiti seharusnya mudah didapati oleh semua orang. Kami membawa anda pilihan produk terpilih dari pelbagai kategori.',
-    about_p2: 'Pasukan kami memilih setiap produk dengan teliti untuk memastikan memenuhi piawaian tinggi kami. Penghantaran pantas, pulangan mudah, dan sokongan berdedikasi.',
-    about_stat_products: 'Produk', about_stat_customers: 'Pelanggan Gembira', about_stat_rating: 'Penilaian',
+    about_p1: `Di ${BRAND}, kami percaya gadis yang hebat seharusnya mudah didapati oleh semua orang. Bermula dengan minat terhadap kualiti dan kepuasan pelanggan, kami membawa anda pilihan terpilih dari pelbagai kategori — daripada keperluan harian hingga penemuan unik.`,
+    about_p2: 'Pasukan kami memilih setiap gadis dengan teliti untuk memastikan memenuhi piawaian tinggi kami. Penghantaran pantas, pulangan mudah, dan sokongan berdedikasi.',
+    about_stat_products: 'Gadis', about_stat_customers: 'Pelanggan Gembira', about_stat_rating: 'Penilaian',
 
-    highlight_tag: 'Pilihan Utama', highlight_title: 'Produk', highlight_acc: 'Pilihan', view_all: 'Lihat Semua',
+    highlight_tag: 'Pilihan Utama', highlight_title: 'Gadis', highlight_acc: 'Pilihan', view_all: 'Lihat Semua',
+    highlight_empty: 'Tiada gadis pilihan buat masa ini.',
 
     contact_strip_title: 'Ada Soalan?', contact_strip_acc: 'Kami Sedia Membantu!',
     contact_strip_sub: 'Hubungi kami melalui WhatsApp, Telegram, atau telefon. Kami balas dalam beberapa minit.',

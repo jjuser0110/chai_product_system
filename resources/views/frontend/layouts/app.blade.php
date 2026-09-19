@@ -25,7 +25,7 @@
 
     <link
         rel="stylesheet"
-        href="{{ asset('css/style.css') }}"
+        href="{{ asset('css/style.css') }}?v={{ @filemtime(public_path('css/style.css')) }}"
     />
 
     @stack('styles')
@@ -41,6 +41,13 @@
         width: 180px;
         height: auto;
         display: block;
+    }
+
+    /* Phones: smaller top-bar logo so EN / 中文 / BM are easy to see and tap */
+    @media (max-width: 576px) {
+        .topbar .tsuki-logo {
+            width: 115px;
+        }
     }
 </style>
 <body>
@@ -168,6 +175,17 @@
     </ul>
 
 
+    {{-- LANGUAGE SWITCHER (sidebar copy - easier to find on phones) --}}
+    <div class="sidebar-lang">
+        <i class="bi bi-translate"></i>
+        <div class="lang-switcher lang-switcher--wide" aria-label="Language selector">
+            <button type="button" class="lang-btn" data-lang="en">English</button>
+            <button type="button" class="lang-btn" data-lang="zh">中文</button>
+            <button type="button" class="lang-btn" data-lang="ms">Melayu</button>
+        </div>
+    </div>
+
+
     <div class="sidebar-footer">
 
         <p>
@@ -236,8 +254,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
 
 {{-- Language data must load BEFORE app.js --}}
-<script src="{{ asset('js/lang.js') }}"></script>
-<script src="{{ asset('js/app.js') }}"></script>
+<script src="{{ asset('js/lang.js') }}?v={{ @filemtime(public_path('js/lang.js')) }}"></script>
+<script src="{{ asset('js/app.js') }}?v={{ @filemtime(public_path('js/app.js')) }}"></script>
 
 @stack('scripts')
 

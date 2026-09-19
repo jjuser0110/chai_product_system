@@ -490,52 +490,63 @@ function applyLang() {
 
   // Language button active state
   document.querySelectorAll('.lang-btn').forEach(btn => {
-    btn.classList.toggle(
-      'lang-btn--active',
-      btn.dataset.lang === currentLang
-    );
+    const isActive = btn.dataset.lang === currentLang;
+    btn.classList.toggle('lang-btn--active', isActive);
+    btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
   });
 }
 
 function renderHomeText() {
   if (typeof t !== 'function') return;
 
+  // Replace only the text of an element.
   const setText = (id, key) => {
     const el = document.getElementById(id);
     if (el) el.textContent = t(key);
   };
 
-  // About
+  // Replace the text of an element but keep its <i> icon (e.g. "View All →").
+  // Plain textContent would delete the icon after switching language.
+  const setLabel = (id, key) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const icon = el.querySelector('i');
+    el.textContent = t(key) + ' ';
+    if (icon) el.appendChild(icon);
+  };
+
+  // Replace only the first plain text node of a heading, so the
+  // <span class="accent"> next to it is left alone.
+  const setLeadText = (id, key) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const textNode = [...el.childNodes].find(
+      node => node.nodeType === Node.TEXT_NODE && node.textContent.trim()
+    );
+    if (textNode) textNode.textContent = ' ' + t(key) + ' ';
+  };
+
+  // Hero banners (static ShopNest page only - Laravel banners come from the DB)
+  for (let i = 1; i <= 4; i++) {
+    setText('bannerTag' + i, 'banner_tag_' + i);
+    setText('bannerSub' + i, 'banner_sub_' + i);
+    const title = document.getElementById('bannerTitle' + i);
+    if (title) title.innerHTML = t('banner_title_' + i); // contains <br/>
+    setLabel('bannerBtn' + i, 'banner_btn_' + i);
+  }
+
+  // About (this section may be commented out - every lookup is null-safe)
   setText('aboutTag', 'about_tag');
   setText('aboutAcc', 'about_title_acc');
   setText('aboutP1', 'about_p1');
   setText('aboutP2', 'about_p2');
+  setLeadText('aboutTitle', 'about_title');
 
-  const aboutTitle = document.getElementById('aboutTitle');
-  if (aboutTitle) {
-    const textNode = [...aboutTitle.childNodes].find(
-      node => node.nodeType === Node.TEXT_NODE && node.textContent.trim()
-    );
-
-    if (textNode) {
-      textNode.textContent = ' ' + t('about_title') + ' ';
-    }
-  }
-
-  // About icon cards — works even without individual IDs
   const iconLabels = document.querySelectorAll('.about-icon-card span');
-  const iconKeys = [
-    'about_icon_1',
-    'about_icon_2',
-    'about_icon_3',
-    'about_icon_4'
-  ];
-
-  iconLabels.forEach((el, i) => {
-    if (iconKeys[i]) el.textContent = t(iconKeys[i]);
+  ['about_icon_1', 'about_icon_2', 'about_icon_3', 'about_icon_4'].forEach((key, i) => {
+    if (iconLabels[i]) iconLabels[i].textContent = t(key);
   });
 
-  // Stats
   setText('statProducts', 'about_stat_products');
   setText('statCustomers', 'about_stat_customers');
   setText('statRating', 'about_stat_rating');
@@ -543,34 +554,15 @@ function renderHomeText() {
   // Highlight
   setText('hlTag', 'highlight_tag');
   setText('hlAcc', 'highlight_acc');
-  setText('viewAll', 'view_all');
-
-  const hlTitle = document.getElementById('hlTitle');
-  if (hlTitle) {
-    const textNode = [...hlTitle.childNodes].find(
-      node => node.nodeType === Node.TEXT_NODE && node.textContent.trim()
-    );
-
-    if (textNode) {
-      textNode.textContent = ' ' + t('highlight_title') + ' ';
-    }
-  }
+  setLeadText('hlTitle', 'highlight_title');
+  setLabel('viewAll', 'view_all');
+  setText('hlEmpty', 'highlight_empty');
 
   // Contact strip
   setText('csAcc', 'contact_strip_acc');
   setText('csSub', 'contact_strip_sub');
-  setText('csBtn', 'contact_strip_btn');
-
-  const csTitle = document.getElementById('csTitle');
-  if (csTitle) {
-    const textNode = [...csTitle.childNodes].find(
-      node => node.nodeType === Node.TEXT_NODE && node.textContent.trim()
-    );
-
-    if (textNode) {
-      textNode.textContent = ' ' + t('contact_strip_title') + ' ';
-    }
-  }
+  setLeadText('csTitle', 'contact_strip_title');
+  setLabel('csBtn', 'contact_strip_btn');
 }
 
 function initLangSwitcher() {
@@ -608,10 +600,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   initLangSwitcher();
 
-  // Laravel Home page
-  if (document.getElementById('aboutTag')) {
+  // Home page text (Laravel Home or static index.html).
+  // Checked on several ids because the About section may be commented out.
+  // Runs on load so the saved language is applied without a click.
+  if (
+    document.getElementById('hlTag') ||
+    document.getElementById('csTitle') ||
+    document.getElementById('aboutTag')
+  ) {
     renderHomeText();
-    return;
   }
 
   // Original static ShopNest pages

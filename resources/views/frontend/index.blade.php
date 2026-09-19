@@ -547,7 +547,7 @@
 
                 @empty
 
-                    <p class="text-center">
+                    <p class="text-center" id="hlEmpty">
                         No highlighted girls available.
                     </p>
 
