@@ -46,14 +46,30 @@
                     required/>
                 </div>
                 <div class="col-md-7">
-                    <label class="form-label" for="tag">Tag?</label>
-                    <select name="tag" class="form-control">
-                        <option value="0" <?php echo isset($product)&&$product->tag == 0?'selected':'' ?>>Nothing</option>
-                        <option value="1" <?php echo isset($product)&&$product->tag == 1?'selected':'' ?>>New</option>
-                        <option value="2" <?php echo isset($product)&&$product->tag == 2?'selected':'' ?>>Popular</option>
-                        <option value="3" <?php echo isset($product)&&$product->tag == 3?'selected':'' ?>>Best</option>
-                        <option value="4" <?php echo isset($product)&&$product->tag == 4?'selected':'' ?>>Limited</option>
+
+                    <label class="form-label" for="tag_id">
+                        Tag
+                    </label>
+
+                    <select name="tag_id" id="tag_id" class="form-control">
+
+                        <option value="">
+                            No Tag
+                        </option>
+
+                        @foreach($tags as $tag)
+
+                            <option
+                                value="{{ $tag->id }}"
+                                {{ old('tag_id', $product->tag_id ?? '') == $tag->id ? 'selected' : '' }}
+                            >
+                                {{ $tag->tag_name }}
+                            </option>
+
+                        @endforeach
+
                     </select>
+
                 </div>
                 <div class="col-md-7">
                     <label class="form-label" for="is_highlight">Is Highlight?</label>

@@ -41,16 +41,14 @@
                             <td>{{$row->product_name??""}}</td>
                             <td>{{$row->description??""}}</td>
                             <td>
-                                @if($row->tag == 0)
-                                    <span class="badge bg-label-secondary me-1">Nothing</span>
-                                @elseif($row->tag == 1)
-                                    <span class="badge bg-label-primary me-1">New</span>
-                                @elseif($row->tag == 2)
-                                    <span class="badge bg-label-success me-1">Popular</span>
-                                @elseif($row->tag == 3)
-                                    <span class="badge bg-label-info me-1">Best</span>
-                                @elseif($row->tag == 4)
-                                    <span class="badge bg-label-warning me-1">Limited</span>
+                                @if($row->tag)
+                                    <span class="badge bg-label-info me-1">
+                                        {{ $row->tag->tag_name }}
+                                    </span>
+                                @else
+                                    <span class="text-muted">
+                                        No Tag
+                                    </span>
                                 @endif
                             </td>
                             <td>

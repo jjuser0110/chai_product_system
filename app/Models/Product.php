@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Category;
+use App\Models\Tag;
+use App\Models\FileAttachment;
 
 class Product extends Model
 {
@@ -16,15 +19,20 @@ class Product extends Model
         'product_name',
         'short_description',
         'description',
-        'tag',
         'arrangement',
         'is_highlight',
         'is_active',
+        'tag_id',
     ];
 
     public function category()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class, 'category_id');
+    }
+
+    public function tag()
+    {
+        return $this->belongsTo(Tag::class, 'tag_id');
     }
 
     public function file_attachments()

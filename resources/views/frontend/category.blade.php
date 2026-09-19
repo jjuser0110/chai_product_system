@@ -3,7 +3,106 @@
 @section('title', 'Tsuki – Categories')
 
 @section('content')
+<style>
+    /* =========================================
+   IMAGE POPUP
+========================================= */
 
+.image-popup {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    padding: 30px;
+
+    background: rgba(0, 0, 0, 0.85);
+
+    backdrop-filter: blur(5px);
+}
+
+.image-popup.show {
+    display: flex;
+}
+
+.image-popup-content {
+    position: relative;
+
+    max-width: 90vw;
+    max-height: 90vh;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-popup-content img {
+    display: block;
+
+    max-width: 90vw;
+    max-height: 82vh;
+
+    width: auto;
+    height: auto;
+
+    object-fit: contain;
+
+    border-radius: 12px;
+
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.image-popup-close {
+    position: fixed;
+
+    top: 20px;
+    right: 25px;
+
+    width: 45px;
+    height: 45px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.95);
+    color: #222;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 20px;
+
+    cursor: pointer;
+
+    z-index: 100000;
+
+    transition: all 0.2s ease;
+}
+
+.image-popup-close:hover {
+    transform: scale(1.08);
+}
+
+.image-popup-title {
+    margin-top: 15px;
+
+    color: #fff;
+
+    font-size: 18px;
+    font-weight: 600;
+
+    text-align: center;
+}
+
+.product-image-popup {
+    cursor: zoom-in;
+}
+</style>
 <!-- PAGE HERO -->
 
 <div class="page-hero">
@@ -116,12 +215,15 @@
 
                         @if($imageUrl)
 
-                            <img
-                                src="{{ $imageUrl }}"
-                                alt="{{ $product->product_name }}"
-                                class="product-card-photo"
-                                loading="lazy"
-                            >
+                        <img
+                            src="{{ $imageUrl }}"
+                            alt="{{ $product->product_name }}"
+                            class="product-card-photo product-image-popup"
+                            data-image="{{ $imageUrl }}"
+                            data-title="{{ $product->product_name }}"
+                            loading="lazy"
+                            onclick="event.preventDefault(); event.stopPropagation(); openImagePopup(this)"
+                        >
 
                         @else
 
@@ -286,7 +388,30 @@
 
     @endif
 
+    <!-- IMAGE POPUP -->
+    <div id="imagePopup" class="image-popup">
 
+        <button
+            type="button"
+            class="image-popup-close"
+            onclick="closeImagePopup()"
+            aria-label="Close">
+            <i class="bi bi-x-lg"></i>
+        </button>
+
+        <div class="image-popup-content" onclick="event.stopPropagation()">
+
+            <img
+                id="popupImage"
+                src=""
+                alt=""
+            >
+
+            <div id="popupImageTitle" class="image-popup-title"></div>
+
+        </div>
+
+    </div>
     <!-- SEARCH EMPTY -->
     <div
         id="searchEmpty"
@@ -407,7 +532,55 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 });
+function openImagePopup(image) {
 
+const popup = document.getElementById('imagePopup');
+const popupImage = document.getElementById('popupImage');
+const popupTitle = document.getElementById('popupImageTitle');
+
+popupImage.src = image.dataset.image;
+popupImage.alt = image.dataset.title || '';
+
+popupTitle.textContent = image.dataset.title || '';
+
+popup.classList.add('show');
+
+document.body.style.overflow = 'hidden';
+}
+
+function closeImagePopup() {
+
+const popup = document.getElementById('imagePopup');
+const popupImage = document.getElementById('popupImage');
+
+popup.classList.remove('show');
+
+popupImage.src = '';
+
+document.body.style.overflow = '';
+}
+
+
+// Click dark background to close
+document.addEventListener('click', function(event) {
+
+const popup = document.getElementById('imagePopup');
+
+if (event.target === popup) {
+    closeImagePopup();
+}
+
+});
+
+
+// Press ESC to close
+document.addEventListener('keydown', function(event) {
+
+if (event.key === 'Escape') {
+    closeImagePopup();
+}
+
+});
 </script>
 
 @endpush

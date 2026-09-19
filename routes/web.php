@@ -3,7 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PosController;
 use App\Http\Controllers\FrontendController;
-
+use App\Http\Controllers\TagController;
+require __DIR__.'/tag.php';
 /*
 |--------------------------------------------------------------------------
 | Web Routes

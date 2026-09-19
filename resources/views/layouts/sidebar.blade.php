@@ -32,6 +32,12 @@ $currentRoute = request()->route()->getName();
                 <div>Girls</div>
             </a>
         </li>
+        <li class="menu-item {{ Str::contains($currentRoute, 'tag.index') ? 'active' : ''}}">
+            <a href="{{ route('tag.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-spreadsheet"></i>
+                <div>Tag</div>
+            </a>
+        </li>
         <li class="menu-item {{ Str::contains($currentRoute, 'banner.index') ? 'active' : ''}}">
             <a href="{{ route('banner.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-spreadsheet"></i>
