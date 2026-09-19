@@ -1,6 +1,6 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'ShopNest – Highlights')
+@section('title', 'Tsuki – Highlights')
 
 @section('content')
 
@@ -149,14 +149,6 @@
               @endif
 
 
-              @if($product->tag)
-
-                <span class="product-badge">
-                  {{ $product->tag }}
-                </span>
-
-              @endif
-
             </div>
 
 
@@ -207,7 +199,7 @@
             <i class="bi bi-star fs-1"></i>
 
             <p class="mt-3">
-              No highlighted products available.
+              No highlighted girls available.
             </p>
 
           </div>

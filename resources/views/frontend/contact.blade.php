@@ -1,6 +1,6 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'ShopNest – Contact Us')
+@section('title', 'Tsuki – Contact Us')
 
 @section('content')
 
@@ -32,7 +32,7 @@
         @if(!empty($whatsapp))
             @php
                 $whatsappNumber = preg_replace('/[^0-9]/', '', $whatsapp);
-                $whatsappUrl = 'https://wa.me/' . $whatsappNumber . '?text=' . urlencode('Hi ShopNest! I need help.');
+                $whatsappUrl = 'https://wa.me/' . $whatsappNumber . '?text=' . urlencode('Hi Tsuki! I need help.');
             @endphp
 
             <a href="{{ $whatsappUrl }}"
@@ -192,7 +192,7 @@
                         <h5>Email Us</h5>
 
                         <p>
-                            hello@shopnest.my<br>
+                            hello@Tsuki.my<br>
                             We reply within 24 hours
                         </p>
 

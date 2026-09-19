@@ -1,6 +1,6 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'ShopNest – Home')
+@section('title', 'Tsuki – Home')
 
 @section('content')
 
@@ -104,11 +104,11 @@
 
                                 <h2>
                                     Welcome to<br>
-                                    ShopNest
+                                    Tsuki
                                 </h2>
 
                                 <p>
-                                    Discover our products
+                                    Discover our girls
                                 </p>
 
                             </div>
@@ -191,25 +191,25 @@
 
                     <div class="about-text">
 
-                        <span class="section-tag">
+                        <span class="section-tag" id="aboutTag">
                             Who We Are
                         </span>
 
-                        <h2 class="section-title">
+                        <h2 class="section-title" id="aboutTitle">
                             Your Trusted
-                            <span class="accent">Online Store</span>
+                            <span class="accent" id="aboutAcc">Online Store</span>
                         </h2>
 
-                        <p>
-                            At ShopNest, we believe great products should be accessible
+                        <p id="aboutP1">
+                            At Tsuki, we believe great girls should be accessible
                             to everyone. Founded with a passion for quality and customer
                             satisfaction, we bring you a carefully curated selection of
                             items across every category — from everyday essentials to
                             unique finds.
                         </p>
 
-                        <p>
-                            Our team hand-picks every product to ensure it meets our high
+                        <p id="aboutP2">
+                            Our team hand-picks every girls to ensure it meets our high
                             standards. With fast shipping, easy returns, and dedicated
                             support, shopping with us is always a pleasure.
                         </p>
@@ -218,17 +218,17 @@
 
                             <div class="stat">
                                 <span class="stat-num">500+</span>
-                                <span class="stat-label">Products</span>
+                                <span class="stat-label" id="statProducts">Girls</span>
                             </div>
 
                             <div class="stat">
                                 <span class="stat-num">10K+</span>
-                                <span class="stat-label">Happy Customers</span>
+                                <span class="stat-label" id="statCustomers">Happy Customers</span>
                             </div>
 
                             <div class="stat">
                                 <span class="stat-num">5★</span>
-                                <span class="stat-label">Rating</span>
+                                <span class="stat-label" id="statRating">Rating</span>
                             </div>
 
                         </div>
@@ -244,25 +244,26 @@
     </section>
 
 
-    <!-- HIGHLIGHT PRODUCTS -->
+    <!-- HIGHLIGHT GIRLS -->
     <section class="highlight-section">
 
         <div class="container">
 
             <div class="section-header">
 
-                <span class="section-tag">
+                <span class="section-tag" id="hlTag">
                     Featured
                 </span>
 
-                <h2 class="section-title">
+                <h2 class="section-title" id="hlTitle">
                     Highlight
-                    <span class="accent">Products</span>
+                    <span class="accent" id="hlAcc">Girls</span>
                 </h2>
 
                 <a
                     href="{{ route('frontend.highlights') }}"
                     class="view-all-btn"
+                    id="viewAll"
                 >
                     View All
                     <i class="bi bi-arrow-right"></i>
@@ -277,7 +278,7 @@
 
             <div
                 class="highlight-track"
-                id="highlightTrack"
+                id="highlightTrack" style="height:300px"
             >
 
                 @php
@@ -314,7 +315,7 @@
                                     src="{{ $productImage }}"
                                     alt="{{ $product->product_name }}"
                                     class="highlight-card-photo"
-                                    loading="lazy"
+                                    loading="lazy" style="height:330px !important"
                                 >
 
                             @else
@@ -325,18 +326,10 @@
 
                             @endif
 
-                            @if($product->tag)
-
-                                <span class="product-badge">
-                                    {{ $product->tag }}
-                                </span>
-
-                            @endif
-
                         </div>
 
 
-                        <div class="highlight-card-body">
+                        <div class="highlight-card-body" style="padding-left:14px !important;padding-right:14px !important;padding-top:110px !important;">
 
                             <h6>
                                 {{ $product->product_name }}
@@ -357,7 +350,7 @@
                 @empty
 
                     <p class="text-center">
-                        No highlighted products available.
+                        No highlighted girls available.
                     </p>
 
                 @endforelse
@@ -378,12 +371,12 @@
 
                 <div class="contact-strip-text">
 
-                    <h3>
+                    <h3 id="csTitle">
                         Got Questions?
-                        <span class="accent">We're Here!</span>
+                        <span class="accent" id="csAcc">We're Here!</span>
                     </h3>
 
-                    <p>
+                    <p id="csSub">
                         Reach out via WhatsApp, Telegram, or give us a call.
                         We respond within minutes.
                     </p>
@@ -393,6 +386,7 @@
                 <a
                     href="{{ route('frontend.contact') }}"
                     class="btn-primary-custom"
+                    id="csBtn"
                 >
                     Contact Us
                     <i class="bi bi-chat-fill"></i>

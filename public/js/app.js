@@ -101,6 +101,10 @@ function initHome() {
   const track = document.getElementById('highlightTrack');
   if (!track) return;
 
+  // Laravel renders highlights from the database.
+  // Only use the old static renderer when data.js is available.
+  if (typeof getHighlightProducts !== 'function') return;
+
   const highlights = getHighlightProducts();
   const all = [...highlights, ...highlights];
   track.innerHTML = all.map(p => {
@@ -456,9 +460,163 @@ function initProductDetail() {
   }
 }
 
-// ---- PAGE ROUTER ----
+
+// =============================================
+// LANGUAGE SWITCHER — Laravel frontend
+// =============================================
+
+function applyLang() {
+  if (typeof t !== 'function') return;
+
+  // Sidebar / bottom navigation
+  const bottomLabels = document.querySelectorAll('.bottom-nav-item span');
+  const navKeys = ['nav_home', 'nav_category', 'nav_highlight', 'nav_contact'];
+
+  bottomLabels.forEach((el, i) => {
+    if (navKeys[i]) el.textContent = t(navKeys[i]);
+  });
+
+  const sidebarLinks = document.querySelectorAll('.sidebar-nav li a');
+  sidebarLinks.forEach((el, i) => {
+    if (!navKeys[i]) return;
+
+    const icon = el.querySelector('i');
+    const iconHTML = icon ? icon.outerHTML : '';
+    el.innerHTML = iconHTML + ' ' + t(navKeys[i]);
+  });
+
+  const footer = document.querySelector('.sidebar-footer p');
+  if (footer) footer.textContent = t('sidebar_footer');
+
+  // Language button active state
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle(
+      'lang-btn--active',
+      btn.dataset.lang === currentLang
+    );
+  });
+}
+
+function renderHomeText() {
+  if (typeof t !== 'function') return;
+
+  const setText = (id, key) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = t(key);
+  };
+
+  // About
+  setText('aboutTag', 'about_tag');
+  setText('aboutAcc', 'about_title_acc');
+  setText('aboutP1', 'about_p1');
+  setText('aboutP2', 'about_p2');
+
+  const aboutTitle = document.getElementById('aboutTitle');
+  if (aboutTitle) {
+    const textNode = [...aboutTitle.childNodes].find(
+      node => node.nodeType === Node.TEXT_NODE && node.textContent.trim()
+    );
+
+    if (textNode) {
+      textNode.textContent = ' ' + t('about_title') + ' ';
+    }
+  }
+
+  // About icon cards — works even without individual IDs
+  const iconLabels = document.querySelectorAll('.about-icon-card span');
+  const iconKeys = [
+    'about_icon_1',
+    'about_icon_2',
+    'about_icon_3',
+    'about_icon_4'
+  ];
+
+  iconLabels.forEach((el, i) => {
+    if (iconKeys[i]) el.textContent = t(iconKeys[i]);
+  });
+
+  // Stats
+  setText('statProducts', 'about_stat_products');
+  setText('statCustomers', 'about_stat_customers');
+  setText('statRating', 'about_stat_rating');
+
+  // Highlight
+  setText('hlTag', 'highlight_tag');
+  setText('hlAcc', 'highlight_acc');
+  setText('viewAll', 'view_all');
+
+  const hlTitle = document.getElementById('hlTitle');
+  if (hlTitle) {
+    const textNode = [...hlTitle.childNodes].find(
+      node => node.nodeType === Node.TEXT_NODE && node.textContent.trim()
+    );
+
+    if (textNode) {
+      textNode.textContent = ' ' + t('highlight_title') + ' ';
+    }
+  }
+
+  // Contact strip
+  setText('csAcc', 'contact_strip_acc');
+  setText('csSub', 'contact_strip_sub');
+  setText('csBtn', 'contact_strip_btn');
+
+  const csTitle = document.getElementById('csTitle');
+  if (csTitle) {
+    const textNode = [...csTitle.childNodes].find(
+      node => node.nodeType === Node.TEXT_NODE && node.textContent.trim()
+    );
+
+    if (textNode) {
+      textNode.textContent = ' ' + t('contact_strip_title') + ' ';
+    }
+  }
+}
+
+function initLangSwitcher() {
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    // Avoid attaching duplicate handlers if this function is called again.
+    if (btn.dataset.langBound === '1') return;
+
+    btn.dataset.langBound = '1';
+
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+
+      const code = this.dataset.lang;
+      if (!code || typeof setLang !== 'function') return;
+
+      setLang(code);
+
+      applyLang();
+      renderHomeText();
+    });
+  });
+
+  applyLang();
+}
+
+// =============================================
+// PAGE ROUTER
+// =============================================
+
 document.addEventListener('DOMContentLoaded', () => {
+  // Initialize language first.
+  if (typeof setLang === 'function' && typeof currentLang !== 'undefined') {
+    setLang(currentLang);
+  }
+
+  initLangSwitcher();
+
+  // Laravel Home page
+  if (document.getElementById('aboutTag')) {
+    renderHomeText();
+    return;
+  }
+
+  // Original static ShopNest pages
   const page = window.location.pathname.split('/').pop();
+
   if (page === 'index.html' || page === '') initHome();
   if (page === 'category.html') initCategory();
   if (page === 'highlight.html') initHighlight();

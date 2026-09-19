@@ -1,6 +1,6 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'ShopNest – ' . $product->product_name)
+@section('title', 'Tsuki – ' . $product->product_name)
 
 @section('content')
 
@@ -68,7 +68,7 @@
             $specs    = $product->specs ?? null; // expects an array/JSON column
             $hasSpecs = !empty($specs);
 
-            $whatsappNumber  = config('shopnest.whatsapp_number', '60123456789');
+            $whatsappNumber  = config('tsuki.whatsapp_number', '60123456789');
             $whatsappMessage = "Hi! I'm interested in " . $product->product_name;
         @endphp
 

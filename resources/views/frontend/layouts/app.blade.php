@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
     <title>
-        @yield('title', 'ShopNest')
+        @yield('title', 'Tsuki')
     </title>
 
     <link
@@ -30,7 +30,19 @@
 
     @stack('styles')
 </head>
+<style>
+    .logo-link {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+    }
 
+    .tsuki-logo {
+        width: 180px;
+        height: auto;
+        display: block;
+    }
+</style>
 <body>
 
 <!-- TOP BAR -->
@@ -38,48 +50,21 @@
 
     <div class="topbar-inner">
 
-        <a href="{{ route('frontend.home') }}" class="logo-link">
-
-            <span class="logo-icon">
-                <i class="bi bi-bag-heart-fill"></i>
-            </span>
-
-            <span class="logo-text">
-                ShopNest
-            </span>
-
-        </a>
+    <a href="{{ route('frontend.home') }}" class="logo-link">
+        <img src="{{ asset('images/tsuki-logo.png') }}" 
+            alt="Tsuki" 
+            class="tsuki-logo">
+    </a>
 
 
         <div class="topbar-actions">
 
-            @if(!empty($whatsapp))
-
-                <a
-                    href="{{ $whatsapp }}"
-                    target="_blank"
-                    class="topbar-icon-btn topbar-whatsapp"
-                    aria-label="WhatsApp"
-                >
-                    <i class="bi bi-whatsapp"></i>
-                </a>
-
-            @endif
-
-
-            @if(!empty($telegram))
-
-                <a
-                    href="{{ $telegram }}"
-                    target="_blank"
-                    class="topbar-icon-btn topbar-telegram"
-                    aria-label="Telegram"
-                >
-                    <i class="bi bi-telegram"></i>
-                </a>
-
-            @endif
-
+            {{-- LANGUAGE SWITCHER --}}
+            <div class="lang-switcher" aria-label="Language selector">
+                <button type="button" class="lang-btn" data-lang="en">EN</button>
+                <button type="button" class="lang-btn" data-lang="zh">中文</button>
+                <button type="button" class="lang-btn" data-lang="ms">BM</button>
+            </div>
 
             <button
                 class="sidebar-toggle"
@@ -114,9 +99,38 @@
     <div class="sidebar-header">
 
         <span class="logo-text">
-            ShopNest
+        <a href="{{ route('frontend.home') }}" class="logo-link">
+            <img src="{{ asset('images/tsuki-logo.png') }}" 
+                alt="Tsuki" 
+                class="tsuki-logo">
+        </a>
         </span>
+        @if(!empty($whatsapp))
 
+        <a
+            href="{{ $whatsapp }}"
+            target="_blank"
+            class="topbar-icon-btn topbar-whatsapp"
+            aria-label="WhatsApp"
+        >
+            <i class="bi bi-whatsapp"></i>
+        </a>
+
+        @endif
+
+
+        @if(!empty($telegram))
+
+        <a
+            href="{{ $telegram }}"
+            target="_blank"
+            class="topbar-icon-btn topbar-telegram"
+            aria-label="Telegram"
+        >
+            <i class="bi bi-telegram"></i>
+        </a>
+
+        @endif
         <button
             class="sidebar-close"
             id="sidebarClose"
@@ -166,7 +180,7 @@
     <div class="sidebar-footer">
 
         <p>
-            © {{ date('Y') }} ShopNest. All rights reserved.
+            © {{ date('Y') }} Tsuki. All rights reserved.
         </p>
 
     </div>
@@ -230,6 +244,8 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
 
+{{-- Language data must load BEFORE app.js --}}
+<script src="{{ asset('js/lang.js') }}"></script>
 <script src="{{ asset('js/app.js') }}"></script>
 
 @stack('scripts')

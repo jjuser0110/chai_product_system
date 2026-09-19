@@ -3,13 +3,13 @@
     <!-- Content -->
 
     <div class="container-xxl flex-grow-1 container-p-y">
-        <h4 class="py-3 breadcrumb-wrapper mb-4"><span class="text-muted fw-light">Product </span></h4>
+        <h4 class="py-3 breadcrumb-wrapper mb-4"><span class="text-muted fw-light">Girl </span></h4>
 
         <!-- DataTable with Buttons -->
         <div class="card">
             <div class="card-header flex-column flex-md-row">
                 <div class="head-label">
-                    <h5 class="card-title mb-0">Product Listing</h5>
+                    <h5 class="card-title mb-0">Girl Listing</h5>
                 </div>
                 <div class="dt-action-buttons text-end pt-3 pt-md-0">
                     <div class="dt-buttons"> 
@@ -26,7 +26,7 @@
                     <thead>
                         <tr>
                             <th>Arrangement</th>
-                            <th>Product Name</th>
+                            <th>Girl Name</th>
                             <th>Description</th>
                             <th>Tag</th>
                             <th>Is Highlight</th>

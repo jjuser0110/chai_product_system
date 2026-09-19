@@ -1,6 +1,6 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'ShopNest – Categories')
+@section('title', 'Tsuki – Categories')
 
 @section('content')
 
@@ -10,7 +10,7 @@
 
 <div class="container">
 
-    <nav aria-label="breadcrumb">
+    <nav aria-label="breadcrumb" >
 
         <ol class="breadcrumb-custom">
 
@@ -56,7 +56,7 @@
             type="text"
             id="searchInput"
             class="search-input"
-            placeholder="Search categories or products…"
+            placeholder="Search girls…"
             autocomplete="off"
         />
 
@@ -201,7 +201,7 @@
                     <i class="bi bi-box-seam fs-1"></i>
 
                     <p class="mt-3">
-                        No products available in this category.
+                        No girls available in this category.
                     </p>
 
                 </div>
@@ -256,7 +256,7 @@
 
                             {{ $category->products_count }}
 
-                            {{ $category->products_count == 1 ? 'Product' : 'Products' }}
+                            {{ $category->products_count == 1 ? 'Girl' : 'Girls' }}
 
                         </span>
 
