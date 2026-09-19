@@ -50,7 +50,17 @@ class ProducttController extends Controller
             'is_highlight' => 'required|boolean',
             'file_attachment.*' => 'nullable|image',
         ]);
-    
+        if ($request->hasFile('file_attachment')) {
+            foreach ($request->file('file_attachment') as $file) {
+                $upload = $this->upload($file, 'product', $product->id);
+                $request->merge([
+                    'file_name'=>$upload['file_name'],
+                    'file_path'=>$upload['file_path'],
+                    'file_type'=>$upload['file_type']
+                ]);
+                $product->file_attachments()->create($request->all());
+            }
+        }
         $product = Product::create([
             'product_name' => $request->product_name,
             'category_id' => $request->category_id,
@@ -79,7 +89,7 @@ class ProducttController extends Controller
 
         $product->load('file_attachments');
 
-        return view('productt.create', compact(
+        return view('product.create', compact(
             'product',
             'category',
             'tags'
@@ -109,7 +119,17 @@ class ProducttController extends Controller
             'is_active' => $request->is_active,
         ]);
     
-        // Your existing image upload logic stays here.
+        if ($request->hasFile('file_attachment')) {
+            foreach ($request->file('file_attachment') as $file) {
+                $upload = $this->upload($file, 'product', $product->id);
+                $request->merge([
+                    'file_name'=>$upload['file_name'],
+                    'file_path'=>$upload['file_path'],
+                    'file_type'=>$upload['file_type']
+                ]);
+                $product->file_attachments()->create($request->all());
+            }
+        }
     
         return redirect()
             ->route('productt.index')
